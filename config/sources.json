@@ -1,0 +1,127 @@
+[
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2005/DataFiles/DEMO_D.XPT",
+    "sha256": "bf9cc79cce501b2fbe5aa8d5b403b618548d02d4aefeb528335cdd9f4c40a3af",
+    "path": "data/raw/DEMO_D.XPT"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2005/DataFiles/DEMO_D.htm",
+    "sha256": "0aec18aba7676aa3ade3d925763c6852e9e2d85c6dadc90bdbe062723d5c60ee",
+    "path": "data/raw/DEMO_D.htm"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2005/DataFiles/SXQ_D.XPT",
+    "sha256": "735d18fc886c3c01ce79fe764a5dbcbc87b6b1fb3e443368610967e8e651a112",
+    "path": "data/raw/SXQ_D.XPT"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2005/DataFiles/SXQ_D.htm",
+    "sha256": "cc5c09a1ac98ff0207ce6124f3a39673af408abd7b8393b8736c9dfbbbc827b9",
+    "path": "data/raw/SXQ_D.htm"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2007/DataFiles/DEMO_E.XPT",
+    "sha256": "02b8e97703d04bc99769c751881bece51ac9ba68cf18a2992a45d3bdfb856147",
+    "path": "data/raw/DEMO_E.XPT"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2007/DataFiles/DEMO_E.htm",
+    "sha256": "0bb161439f6a387f44f2afb642451193190d76a92ad6de6c7ae83668d4647a64",
+    "path": "data/raw/DEMO_E.htm"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2007/DataFiles/SXQ_E.XPT",
+    "sha256": "0d3f72f28f3221922dd757d36370060f222f81eb36cd78b6096fb05637967387",
+    "path": "data/raw/SXQ_E.XPT"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2007/DataFiles/SXQ_E.htm",
+    "sha256": "8028b6dafd696add842a1dc42be071f20fc0add7fe8db3cc75b98b803ef03cd2",
+    "path": "data/raw/SXQ_E.htm"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2009/DataFiles/DEMO_F.XPT",
+    "sha256": "78c4d4a6e5eafa9da3bbb24a90d140fef5d8c0cda932a7ff8ee609288d4fae07",
+    "path": "data/raw/DEMO_F.XPT"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2009/DataFiles/DEMO_F.htm",
+    "sha256": "c3a26469d6f9f53bedf47f9313eba66fead267a6777e5aab43cf4184ec7b2564",
+    "path": "data/raw/DEMO_F.htm"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2009/DataFiles/SXQ_F.XPT",
+    "sha256": "25979db5d2f946457210fc0e3beaa8cf49bd89a5a435934847815907cd520c66",
+    "path": "data/raw/SXQ_F.XPT"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2009/DataFiles/SXQ_F.htm",
+    "sha256": "6c8a44a02b60509bb3d0deb5f9afb1f0c4fe7cd6d95456a0c266756ba337f713",
+    "path": "data/raw/SXQ_F.htm"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2011/DataFiles/DEMO_G.XPT",
+    "sha256": "eaf0525d1952626885af3e935415a1f66ad62c18698080e7354789c125af252d",
+    "path": "data/raw/DEMO_G.XPT"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2011/DataFiles/DEMO_G.htm",
+    "sha256": "5a8b2bc790f2a70705f035c398a76f7a8bbb5ec92323929cbbf04eb0428f59d7",
+    "path": "data/raw/DEMO_G.htm"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2011/DataFiles/SXQ_G.XPT",
+    "sha256": "6546c06e69988c3f8c5bc21f51094112713953e62809e2832b752bc77a62d1b1",
+    "path": "data/raw/SXQ_G.XPT"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2011/DataFiles/SXQ_G.htm",
+    "sha256": "29b1efa961c2db10c4c73272e60591cbd71e8becf0c15c05d03ab7a0a847e2e6",
+    "path": "data/raw/SXQ_G.htm"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2013/DataFiles/DEMO_H.XPT",
+    "sha256": "f8f0cbb3085a323d4cde22349b164878fea1e64dbc404e65b5815c7816b547d7",
+    "path": "data/raw/DEMO_H.XPT"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2013/DataFiles/DEMO_H.htm",
+    "sha256": "686d31f7e0857fd0c16c9a9a4e9878ad1d6e3ec4cba9a904fcce4048c9506b68",
+    "path": "data/raw/DEMO_H.htm"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2013/DataFiles/SXQ_H.XPT",
+    "sha256": "291d00ff804e776e0e50d3b17c5eb8b08ed7c8bd88e2f8fd37b07c5678cf0c7c",
+    "path": "data/raw/SXQ_H.XPT"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2013/DataFiles/SXQ_H.htm",
+    "sha256": "c66c7d945a5b5b972961ed2f47c2abffd9828c67f2d596f184353eba512dd81c",
+    "path": "data/raw/SXQ_H.htm"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2015/DataFiles/DEMO_I.XPT",
+    "sha256": "c9297c6c37ae8f78f29be9568fa2a03cf3b112616a39afee04030fc775a66a0d",
+    "path": "data/raw/DEMO_I.XPT"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2015/DataFiles/DEMO_I.htm",
+    "sha256": "ae488b8a00e7cdbae20f2fb279819dcb180b03373efa13abf784c52a0b82e473",
+    "path": "data/raw/DEMO_I.htm"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2015/DataFiles/SXQ_I.XPT",
+    "sha256": "6db887159ef8607f77ebb741136d829a03f5e5db7c4112cb76fd7f9e54683b52",
+    "path": "data/raw/SXQ_I.XPT"
+  },
+  {
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2015/DataFiles/SXQ_I.htm",
+    "sha256": "c0b4e1e3d29f007524b3ec54c1560018f07ae1ddfcd0f5de2f662b6a2f108af5",
+    "path": "data/raw/SXQ_I.htm"
+  },
+  {
+    "path": "data/maloney/source.xlsx",
+    "url": "https://raw.githubusercontent.com/silasmcalder/maloney2022reanalysis/fde80ffd79549a2f1271470a8b1cc797c3a1791d/data/13178_2022_727_MOESM1_ESM.xlsx",
+    "sha256": "ee2e25d1c47d0b913fec46895cbad0d124eaa4a2977eb66d479c6201e7f797ad"
+  }
+]

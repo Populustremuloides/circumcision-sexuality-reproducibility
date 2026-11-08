@@ -1,0 +1,35 @@
+# Methods and reproduction scope
+
+## NHANES population and endpoints
+
+The analysis combines six NHANES cycles from 2005–2006 through 2015–2016. Demographic and sexual-behavior files are joined using participant identifier SEQN. The analysis domain comprises recorded males aged 20–59 with positive examination weights; complete cases are selected for each model. Examination weights are divided by six for the pooled analysis. Strata and primary sampling units are nested within cycle, and positive-weight examined records outside the analysis domain are retained for domain variance estimation.
+
+Circumcision is self-reported in SXQ280. The core endpoints are reported lifetime male–male sexual behavior and gay/bisexual versus heterosexual identity. The harmonization explicitly handles changes in identity coding and sexual-behavior routing across cycles, including the 2015 identity-code reversal. Refused, unknown, and nonresponse values are not treated as negative responses. Valid structural skips for never having had sex are handled explicitly in the earlier cycles. The scripts record sample flow, routing checks, source-codebook frequency comparisons, and agreement between XPT readers.
+
+Weighted binomial logistic regression estimates odds ratios with uncircumcised men as the reference. Models progress from unadjusted through age/cycle and demographic adjustment; the common full set includes linear and quadratic age, cycle, race/ethnicity, education, and nativity. Both model-specific and common-complete-case analyses are generated. The exact fitted formulas and sample sizes are written with the estimates.
+
+Taylor-linearized variances aggregate influence functions by PSU within stratum, including zero domain contributions. Regression confidence intervals and tests use a t reference with domain design degrees of freedom minus the number of non-intercept parameters. Weighted prevalence intervals use a logit transformation; differences use paired influence functions. The implementation checks convergence, rank, conditioning, score residuals, an alternative sandwich calculation, direct unadjusted cross-product odds ratios, and invariance to common weight rescaling. Selected models also receive delete-one-PSU jackknife checks.
+
+## NHANES extensions
+
+Behavior-specific analyses distinguish lifetime and past-year anal sex and performing oral sex, among all men and among men reporting lifetime male–male behavior, for the cycles supporting these questions. Identity analyses estimate within-identity associations, circumcision-by-identity interactions, and descriptive contributions to the crude prevalence gap. A contribution to the aggregate gap is not a within-group effect size or a causal attribution.
+
+The explanatory analyses examine residence/language adjustment, contrasts involving male and female oral-sex behavior, and partner-count or recent-partner endpoints. Standardized contrasts use stratified delete-one-PSU jackknife replication with paired restandardization. Sparse or unstable models are explicitly flagged. Failed focal tests remain in the multiplicity family using a placeholder p-value of one solely for calculating the Holm correction; they are not reported as valid null estimates.
+
+Core tests are nominal. The behavior extensions report Holm adjustment within the four lifetime and four past-year tests and across all eight. Identity tests use three-test families within each period. Explanatory tests use five-test families. These choices describe the completed analyses; they do not erase the exploratory search or establish prospective confirmatory status. Full details and period definitions appear in `config/analysis.json`; formulas are implemented in the scripts rather than dynamically generated from that descriptive configuration.
+
+## Separate Maloney supplement
+
+The source is the publicly available supplementary workbook associated with [Maloney and colleagues (2023), *Circumcision status regret and satisfaction: Findings of a US national survey*](https://doi.org/10.1007/s13178-022-00727-6), retrieved from the commit-pinned public reanalysis repository specified in `config/sources.json`. The analysis selects completed questionnaires from circumcised respondents reporting circumcision at birth–12 months or after one year through age 18. Adult circumcisions and missing age categories are excluded. This is a separate respondent sample and is not pooled with NHANES.
+
+The three variables are any regret (minimal through severe versus none), endorsement of the statement that thinking about one's sexual life makes one feel less of a man (responses 1–3 versus 4–6), and discomfort with other people seeing one's penis (minimal through significant discomfort versus comfortable/extremely comfortable). The last endpoint is general visibility, not the distinct question about a sexual partner seeing one's penis. Variables are selected by full question text; unexpected response labels raise an error.
+
+All 326 eligible respondents have valid responses to the three required questions and form the primary analysis. A sensitivity analysis additionally requires a valid response to partner visibility, leaving 325 respondents and reproducing the manuscript's additional exclusion. The excluded respondent endorses both masculinity and general-visibility discomfort and reports regret. Both samples are retained under explicit labels so the source of the discrepancy remains reviewable.
+
+For each sample, the code generates joint counts, conditional exact odds ratios with 95% exact confidence intervals, and two-sided Fisher tests for masculinity–regret, masculinity–general-visibility, and regret among men endorsing both experiences versus neither. For exact tests, `odds_ratio` is the conditional maximum-likelihood estimate; `sample_odds_ratio` also records the cross-product estimate used for the manuscript point estimates. The exact intervals are conditional intervals. Binomial logistic regressions relate regret to the two experiences jointly and then add their interaction, reporting Wald intervals and tests. These are exploratory associations within circumcised respondents, without survey weighting or a multiple-testing correction. They do not estimate the effect of circumcision or establish temporal or causal relationships.
+
+## Verification and provenance
+
+Source SHA-256 checksums are checked before analysis and recorded locally. The NHANES validation includes routing and coding checks, a hand-calculated domain-variance example, weight invariance, and jackknife diagnostics. The optional R script independently estimates eight core models using `survey::svyglm` on the harmonized dataset and checks agreement with the Python calculations. It does not validate every extension or independently harmonize source records.
+
+The public repository contains only code, configuration, and documentation. Data and generated results are recreated locally. The release has a fresh initial commit; the absence of development history is not evidence that the analyses were prespecified. No cross-study meta-analysis is included.

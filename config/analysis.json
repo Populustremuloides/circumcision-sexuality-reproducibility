@@ -1,0 +1,68 @@
+{
+  "title": "Circumcision status and reported lifetime sex with men among U.S. men aged 20\u201359 in NHANES 2005\u20132016",
+  "status": "Consolidated specification of completed exploratory analyses; not a new preregistration",
+  "population": "Recorded male, age 20\u201359, positive examination weight; complete cases as required by each outcome/model",
+  "exposure": "Self-reported circumcision, SXQ280; uncircumcised reference",
+  "common_adjustment": [
+    "linear and quadratic age",
+    "survey cycle",
+    "RIDRETH1 race/ethnicity",
+    "adult education",
+    "nativity"
+  ],
+  "design": "All positive-weight examined records retained; cycle-nested strata and PSUs; domain inference",
+  "initial": {
+    "years": "2005\u20132016",
+    "outcomes": [
+      "gay/bisexual versus heterosexual identity",
+      "reported lifetime male\u2013male behavior"
+    ],
+    "variance": "Taylor",
+    "multiplicity": "Nominal; no original correction"
+  },
+  "behavior_specific": {
+    "years": "2009\u20132016",
+    "populations": [
+      "all men",
+      "lifetime MSM"
+    ],
+    "outcomes": [
+      "lifetime anal sex",
+      "lifetime performing oral sex",
+      "past-year anal sex",
+      "past-year performing oral sex"
+    ],
+    "variance": "Taylor",
+    "multiplicity": "Holm within four lifetime and four past-year tests, plus all eight"
+  },
+  "identity": {
+    "years": [
+      "2005\u20132016",
+      "2009\u20132016"
+    ],
+    "comparisons": [
+      "heterosexual association",
+      "gay/bisexual association",
+      "circumcision-by-identity interaction"
+    ],
+    "variance": "Taylor",
+    "multiplicity": "Holm three per period",
+    "decomposition": "Descriptive decomposition of the raw prevalence gap, not causal attribution"
+  },
+  "explanatory": {
+    "years": "2009\u20132016",
+    "sensitivity_years": "2009\u20132014",
+    "comparisons": [
+      "change in standardized prevalence difference after residence/language adjustment",
+      "male/female oral prevalence-ratio contrast",
+      "multiple female partners",
+      "multiple male partners within heterosexual MSM",
+      "recent male partner within heterosexual MSM"
+    ],
+    "variance": "Stratified delete-one-PSU jackknife with paired restandardization",
+    "multiplicity": "Holm five; failed tests retained as correction placeholders only"
+  },
+  "numerical_implementation": "scripts/; this document describes the implementation and does not dynamically override its formulas",
+  "reproduction": "python scripts/reproduce.py",
+  "supplement": "Corrected Maloney circumcised-only masculinity, general visibility, and regret analysis; see docs/methods.md."
+}
