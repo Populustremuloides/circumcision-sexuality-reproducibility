@@ -46,7 +46,7 @@ Core estimates are in `outputs/models.csv`, with prevalence and sensitivity esti
 
 ## Maloney sample clarification
 
-The primary supplement uses all 326 eligible respondents with the three required responses. The manuscript's 325-person table is reproduced separately as `manuscript_sensitivity`: it additionally excludes a respondent missing partner-visibility comfort, although these models use general-visibility comfort. Both samples are generated and labeled. The 326-person primary analysis therefore intentionally differs from that manuscript table; see [methods](docs/methods.md).
+The primary supplement and corrected manuscript use all 326 eligible respondents with the three required responses. The previous manuscript's 325-person sample is reproduced separately as `manuscript_sensitivity`: it additionally excludes a respondent missing partner-visibility comfort, although these models use general-visibility comfort. Both samples are generated and labeled. The corrected manuscript reports the 326-person primary analysis; see [methods](docs/methods.md).
 
 A manually triggered GitHub Actions workflow (`Reproduce analyses`) also runs the Python pipeline on Linux with Python 3.11. It does not upload data or results. The local release check used Python 3.10.14, R 4.5.3, and survey 4.5.
 

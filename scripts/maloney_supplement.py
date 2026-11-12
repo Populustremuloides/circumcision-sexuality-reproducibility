@@ -1,7 +1,8 @@
 """Separate circumcised-only analysis of regret and reported experiences.
 
 Primary sample uses only variables needed for the analysis. The sensitivity
-sample adds partner-visibility completeness to reproduce the manuscript table.
+sample adds partner-visibility completeness to reproduce the previous manuscript
+sample. The corrected manuscript reports the 326-person primary analysis.
 """
 import hashlib
 import json
