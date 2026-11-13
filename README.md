@@ -1,12 +1,23 @@
 # Circumcision and sexual behavior: reproducible analyses
 
-Code to reproduce the NHANES 2005–2016 analyses of circumcision status and reported male–male sexual behavior, with a separate Maloney supplement examining regret, masculinity, and comfort with penile visibility among circumcised respondents.
+Code for NHANES 2005–2016 and the separate Maloney regret/self-concept supplement. Each headline question has a shared sample and model specification, separate frequentist and Bayesian estimators, and a runnable analysis ID.
 
-This is a standalone code release. Public source files are downloaded when the pipeline runs; data, generated tables, figures, and manuscript files are not distributed here. The analyses are observational and exploratory. This consolidated specification is not a preregistration, and associations should not be interpreted as causal effects.
+These observational, exploratory associations are not causal effects. The Bayesian reanalysis followed examination of the frequentist results. The repository excludes source data, generated datasets, model-output files and manuscript files; the concise documentation tables below are generated from validated local runs. No cross-study meta-analysis is included.
 
-## Quick start
+## Headline questions: side-by-side results
 
-Install Python 3.10 or 3.11 and Git, then run:
+| Question | Frequentist OR (95% CI) | Bayesian OR (95% calibrated interval) | P(OR > 1) | Specification and code |
+|---|---:|---:|---:|---|
+| Lifetime male–male behavior | 1.54 (1.16–2.05) | 1.48 (1.14–1.95) | 99.9% | [specification](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/main/config/analyses.json#L10) · [frequentist](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/main/analyses/nhanes/run.py#L8) · [Bayesian](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/main/src/bayesian/headline.py#L9) |
+| Gay/bisexual versus heterosexual identity | 1.25 (0.85–1.84) | 1.22 (0.86–1.75) | 86.3% | [specification](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/main/config/analyses.json#L19) · [frequentist](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/main/analyses/nhanes/run.py#L8) · [Bayesian](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/main/src/bayesian/headline.py#L9) |
+| Gay versus heterosexual identity | 1.52 (0.95–2.42) | 1.40 (0.94–2.12) | 94.8% | [specification](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/main/config/analyses.json#L28) · [frequentist](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/main/analyses/nhanes/run.py#L8) · [Bayesian](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/main/src/bayesian/headline.py#L9) |
+| Bisexual versus heterosexual identity | 0.94 (0.49–1.79) | 0.94 (0.54–1.70) | 42.1% | [specification](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/main/config/analyses.json#L37) · [frequentist](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/main/analyses/nhanes/run.py#L8) · [Bayesian](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/main/src/bayesian/headline.py#L9) |
+
+Frequentist intervals use the survey-design t reference. Bayesian results use a direct, proper-prior weighted logistic pseudo-posterior with uncertainty calibrated for strata and PSUs at the posterior mean. They are not the earlier Gaussian-summary approximation, which remains available as a sensitivity analysis. Directional probabilities concern adjusted associations under the stated model and priors, not causation. See [each question and its runnable command](docs/results.md), [extension and Maloney comparisons](docs/extension_results.md), [methods](docs/methods.md), and [validation findings](docs/validation.md).
+
+## Reproduce
+
+Python 3.10 or 3.11 and Git are required. From the repository root:
 
 ```sh
 git clone https://github.com/Populustremuloides/circumcision-sexuality-reproducibility.git
@@ -17,13 +28,35 @@ python -m pip install -r requirements.txt
 python scripts/reproduce.py
 ```
 
-On Windows, activate with `.venv\Scripts\activate` instead. An internet connection is required for installation and the initial source download. Allow several minutes for the survey replication calculations. Commands run from the repository root; the runner itself can also be invoked by absolute path.
+On Windows, activate with `.venv\Scripts\activate`. Initial downloads require internet access. The runner verifies 25 pinned public source files, harmonizes records, runs frequentist analyses and their numerical checks, fits the Bayesian headline models and approximation sensitivities, runs both Maloney implementations, verifies the paired results, and generates this comparison. Allow several minutes; extensive validation takes longer. Data, outputs and draws remain local in ignored directories. A failure stops the pipeline and is recorded in `outputs/run.json` with logs under `outputs/logs/`.
 
-The runner downloads and verifies 25 public source files, harmonizes variables, fits the NHANES analyses, checks numerical results, generates the main figure, and runs the separate Maloney supplement. A failed download, checksum, model check, or validation stops the run with a nonzero exit status. No credentials or private files are needed.
+```sh
+python scripts/reproduce.py --offline                 # verified cached sources
+python scripts/reproduce.py --nhanes-only             # omit Maloney
+python scripts/reproduce.py --frequentist-only        # original analyses only
+python scripts/reproduce.py --validation              # alternative implementations + 4,000 targeted simulations
+python -m analyses.nhanes.run --analysis nhanes.identity_gay.adjusted
+python -m scripts.build_results --check               # detect stale comparison text
+```
 
-## Independent R survey verification
+The single-question command requires the harmonized data from the full runner. Add `--method frequentist` or `--method bayesian` to run one estimator. Bayesian numerical integration uses four independent importance-sampling batches; no MCMC installation is required.
 
-For a complete environment including R, use Conda or Mamba:
+## Repository map
+
+| Location | Purpose |
+|---|---|
+| [config/analyses.json](config/analyses.json) | Executable headline IDs, outcomes, formulas and shared adjustment sets |
+| [src/data](src/data) | Source download, audits and NHANES harmonization |
+| [src/survey](src/survey) | Shared design-based covariance and survey estimation |
+| [src/frequentist](src/frequentist) | Frequentist NHANES, extensions and Maloney |
+| [src/bayesian](src/bayesian) | Direct headline model, Gaussian/t sensitivities and direct Maloney integration |
+| [analyses](analyses) | Question-level entry points and optional timing scenarios |
+| [validation](validation) | Independent R checks, numerical comparisons and simulations |
+| [docs/results.md](docs/results.md) | Result-to-code links and individual commands |
+
+Outputs are separated into `outputs/frequentist/`, `outputs/bayesian/`, `outputs/validation/`, and optional `outputs/timing/`. Earlier script names remain as compatibility entry points; numerical implementations live in the directories above.
+
+## Independent R verification
 
 ```sh
 conda env create -f environment.yml
@@ -31,33 +64,12 @@ conda activate circumcision-reproduction
 python scripts/reproduce.py --r-check
 ```
 
-Alternatively, add R and the `survey` package to your Python setup and ensure `Rscript` is on `PATH`. The reference check uses R 4.5.3 and survey 4.5. It compares eight core NHANES models with the Python implementation, including coefficients, standard errors, confidence limits, p-values, sample sizes, and degrees of freedom. It uses the same harmonized records; it is an independent estimation check, not an independent re-extraction or validation of every extension model.
+Alternatively install R and `survey` and put `Rscript` on PATH. The reference comparison checks eight core models on shared harmonized records; it is not an independent data extraction or validation of every extension. The reference versions are R 4.5.3 and survey 4.5. The manually triggered GitHub Actions workflow runs the standard pipeline without uploading data or generated outputs.
 
-## Re-running and finding results
+## Scope and transparency
 
-```sh
-python scripts/reproduce.py --offline --r-check  # verify cached inputs and run everything
-python scripts/reproduce.py --nhanes-only       # omit the Maloney analysis
-```
+The Maloney primary sample includes all 326 eligible men with the three required responses. The former 325-person exclusion is retained as an explicitly labeled sensitivity check. This sample is not pooled with NHANES.
 
-`data/` contains downloaded and harmonized inputs. `outputs/` contains generated estimates, validation records, and figures. Both directories are ignored by Git. The runner records stage status and timing in `outputs/run.json` and individual logs in `outputs/logs/`. A successful run ends with `status: passed`.
+Timing sensitivity scenarios retain the earlier Gaussian approximation and are not silently relabeled as direct-posterior results. They cannot identify the probability that infant circumcision caused the association. [Run and interpret timing scenarios](analyses/timing/README.md).
 
-Core estimates are in `outputs/models.csv`, with prevalence and sensitivity estimates beside them. Extensions write to `outputs/behavior_extension/`, `outputs/identity_subgroups/`, and `outputs/explanations/`. Maloney results are in `outputs/maloney/`. R comparisons are in `outputs/r_survey_*.csv`, with environment details in `outputs/r_survey_reference_session.txt`.
-
-## Maloney sample clarification
-
-The primary supplement and corrected manuscript use all 326 eligible respondents with the three required responses. The previous manuscript's 325-person sample is reproduced separately as `manuscript_sensitivity`: it additionally excludes a respondent missing partner-visibility comfort, although these models use general-visibility comfort. Both samples are generated and labeled. The corrected manuscript reports the 326-person primary analysis; see [methods](docs/methods.md).
-
-A manually triggered GitHub Actions workflow (`Reproduce analyses`) also runs the Python pipeline on Linux with Python 3.11. It does not upload data or results. The local release check used Python 3.10.14, R 4.5.3, and survey 4.5.
-
-## Repository guide
-
-- `scripts/reproduce.py`: entry point and logged stage orchestration.
-- `scripts/download.py` and `config/sources.json`: public URLs and SHA-256 checksums.
-- `scripts/analyze.py`: source audits, harmonization, survey estimation, core outcomes.
-- `scripts/behavior_extension.py`, `identity_subgroups.py`, `explanation_analysis.py`: NHANES extensions.
-- `scripts/validate.py`, `validate_explanation_analysis.py`, `reproduce_survey.R`: numerical verification.
-- `scripts/maloney_supplement.py`: separate circumcised-only supplement.
-- `config/analysis.json` and [methods](docs/methods.md): analysis scope and interpretation.
-
-The source manifest pins the actual downloaded bytes, including a commit-specific public Maloney workbook URL. If a provider changes a source, the downloader fails rather than silently accepting a different dataset. Investigate that change before updating a checksum. The original studies' data terms and attribution requirements continue to apply to downloaded files.
+The release preserves the clean public-code history without importing exploratory development commits. Its [analytical history](docs/analytical_history.md) documents methodological development and limitations. Sparse gay-identity fits and imperfect simulation coverage are retained in the [validation report](docs/validation.md).

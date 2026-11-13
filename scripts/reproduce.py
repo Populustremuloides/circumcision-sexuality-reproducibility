@@ -18,6 +18,8 @@ def main():
     parser.add_argument('--offline', action='store_true', help='Require checksum-verified cached inputs.')
     parser.add_argument('--nhanes-only', action='store_true', help='Omit the separate Maloney supplement.')
     parser.add_argument('--r-check', action='store_true', help='Also verify core estimates with R survey.')
+    parser.add_argument('--frequentist-only', action='store_true', help='Run the original frequentist pipeline only.')
+    parser.add_argument('--validation', action='store_true', help='Run alternative Bayesian comparisons and 4,000 targeted simulations.')
     args = parser.parse_args()
     if args.r_check and not shutil.which('Rscript'):
         parser.error('--r-check requires Rscript on PATH and the R survey package; see README.md.')
@@ -54,6 +56,19 @@ def main():
             print((logs/(script+'.log')).read_text()[-6000:])
             raise SystemExit(result.returncode)
         status_path.write_text(json.dumps(status, indent=2)+'\n')
+    if not args.frequentist_only:
+        modules = ['src.bayesian.approximation', 'analyses.nhanes.run']
+        if not args.nhanes_only: modules += ['src.bayesian.maloney']
+        if args.validation: modules += ['validation.bayesian.compare', 'validation.simulations.targeted']
+        modules += ['validation.release', 'scripts.build_results']
+        for module in modules:
+            print(f'Running {module} ...', flush=True)
+            with (logs/(module+'.log')).open('w') as log:
+                result=subprocess.run([sys.executable,'-m',module],cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT)
+            status['stages'].append(dict(module=module,exit_code=result.returncode))
+            if result.returncode:
+                status.update(status='failed',failed_stage=module);status_path.write_text(json.dumps(status,indent=2)+'\n');print((logs/(module+'.log')).read_text()[-6000:]);raise SystemExit(result.returncode)
+            status_path.write_text(json.dumps(status,indent=2)+'\n')
     status.update(status='passed', completed_utc=datetime.now(timezone.utc).isoformat())
     status_path.write_text(json.dumps(status, indent=2)+'\n')
     print('Reproduction and checks passed. Generated results are in outputs/.', flush=True)

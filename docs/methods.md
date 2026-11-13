@@ -16,7 +16,7 @@ Behavior-specific analyses distinguish lifetime and past-year anal sex and perfo
 
 The explanatory analyses examine residence/language adjustment, contrasts involving male and female oral-sex behavior, and partner-count or recent-partner endpoints. Standardized contrasts use stratified delete-one-PSU jackknife replication with paired restandardization. Sparse or unstable models are explicitly flagged. Failed focal tests remain in the multiplicity family using a placeholder p-value of one solely for calculating the Holm correction; they are not reported as valid null estimates.
 
-Core tests are nominal. The behavior extensions report Holm adjustment within the four lifetime and four past-year tests and across all eight. Identity tests use three-test families within each period. Explanatory tests use five-test families. These choices describe the completed analyses; they do not erase the exploratory search or establish prospective confirmatory status. Full details and period definitions appear in `config/analysis.json`; formulas are implemented in the scripts rather than dynamically generated from that descriptive configuration.
+Core tests are nominal. The behavior extensions report Holm adjustment within the four lifetime and four past-year tests and across all eight. Identity tests use three-test families within each period. Explanatory tests use five-test families. These choices describe the completed analyses; they do not erase the exploratory search or establish prospective confirmatory status. Full details and period definitions appear in `config/analysis.json`; the headline formulas and common adjustment sets are executable in `config/analyses.json`; extension specifications remain in their named modules.
 
 ## Separate Maloney supplement
 
@@ -32,4 +32,14 @@ For each sample, the code generates joint counts, conditional exact odds ratios 
 
 Source SHA-256 checksums are checked before analysis and recorded locally. The NHANES validation includes routing and coding checks, a hand-calculated domain-variance example, weight invariance, and jackknife diagnostics. The optional R script independently estimates eight core models using `survey::svyglm` on the harmonized dataset and checks agreement with the Python calculations. It does not validate every extension or independently harmonize source records.
 
-The public repository contains only code, configuration, and documentation. Data and generated results are recreated locally. The release has a fresh initial commit; the absence of development history is not evidence that the analyses were prespecified. No cross-study meta-analysis is included.
+The public repository contains only code, configuration, and documentation. Data and full model outputs are recreated locally; concise result summaries are generated into the README and results guide. The release began with a clean initial commit; the absence of development history is not evidence that the analyses were prespecified. No cross-study meta-analysis is included.
+
+## Bayesian inference
+
+The headline implementation in `src/bayesian/headline.py` fits the full Bernoulli logistic pseudo-likelihood with weights normalized to analytic sample size and proper Normal priors. The circumcision logOR prior has SD 0.5; the intercept has SD 2.5, quadratic age SD 0.5 and other nuisance coefficients SD 1. These are the frozen priors, on the recorded coding and reference categories. Four independently seeded 32,768-draw Student-t importance batches integrate each posterior. ESS, maximum importance weight and batch stability checks must pass.
+
+Centered draws are transformed using the likelihood Hessian and full-design sandwich covariance evaluated at the posterior mean. This accounts for strata and PSUs asymptotically; it is a calibrated pseudo-posterior, not a fully generative survey-population model. No unregularized MLE is required for this headline fit. Implementation follows the calibration principles described by [Williams and Savitsky](https://doi.org/10.1111/insr.12376) and [csSampling](https://arxiv.org/html/2308.06845v1); it is a custom Python implementation, not execution of that R package.
+
+The original coefficient-summary Gaussian/t approach remains in `src/bayesian/approximation.py`, including the prior sensitivity grid and extensions. Do not label those extension outputs as direct-posterior results. Sparse models and prior-sensitive interactions remain explicit. Maloney uses direct low-dimensional numerical integration of its Bernoulli likelihood with the stated priors, without survey calibration.
+
+Alternative full-likelihood comparisons, targeted simulations, and the sparse-data amendment are in `validation/`. See the [validation findings](validation.md), including imperfect fixed-truth coverage. Timing scenarios are independent sensitivity calculations under unmeasured timing assumptions, not evidence identifying infant causal effects.
