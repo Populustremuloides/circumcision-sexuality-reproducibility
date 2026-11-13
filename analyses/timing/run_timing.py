@@ -9,16 +9,21 @@ from scipy.optimize import brentq
 ROOT=Path(__file__).resolve().parents[2]; OUT=ROOT/'outputs/timing'; REPO=ROOT; OUT.mkdir(parents=True,exist_ok=True)
 from src.bayesian.approximation import fit,components,priors,sample,summarize,ADJUST
 sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
-manifest={'inputs':{str(p.relative_to(ROOT)):sha(p) for p in [REPO/'data/analysis.csv.gz',ROOT/'analyses/timing/extraction_addendum.txt',ROOT/'config/analyses.json']}}
+manifest={'inputs':{str(p.relative_to(ROOT)):sha(p) for p in [REPO/'data/analysis.csv.gz',ROOT/'analyses/timing/extraction_addendum.txt',ROOT/'config/analyses.json',ROOT/'analyses/timing/source_values.json',ROOT/'analyses/timing/sources.json']}}
 (OUT/'provenance.json').write_text(json.dumps(manifest,indent=2))
+# Clear generated model caches and failure logs so unsuccessful new fits cannot reuse old files.
+for cached in OUT.glob('model_*.npz'):cached.unlink()
+(OUT/'model_failures.jsonl').write_text('')
 d=pd.read_csv(REPO/'data/analysis.csv.gz');d['birth_early']=d.year-d.RIDAGEYR-1;d['birth_late']=d.year+1-d.RIDAGEYR
-rates=dict(zip(range(1979,1997),np.array([64.5,64.7,64.9,62.5,63.2,62.4,59.5,59.4,58.6,58.,58.8,59.,61.1,60.7,59.5,62.,64.1,60.2])/100))
+source_values=json.loads((ROOT/'analyses/timing/source_values.json').read_text())
+rates={int(year):percent/100 for year,percent in source_values['newborn']['values'].items()}
+counts=source_values['procedures']['counts']
 pd.DataFrame({'birth_year':rates.keys(),'hospital_neonatal_rate':rates.values()}).to_csv(OUT/'newborn_source_extract.csv',index=False)
 coverage=[];stocks=[];main=[];required=[];fixed=[];probs=[];raw=[];mixed=[];checks=[]
 fractions=np.unique(np.r_[.001,.0025,.005,np.arange(1,101)/100])
 def stock(t,threshold):
- bands=[(max(threshold,15),44,15000),(45,64,13000)]
- if threshold<15:bands.insert(0,(threshold,14,92000))
+ bands=[(max(threshold,15),44,counts['15to44']),(45,64,counts['45to64'])]
+ if threshold<15:bands.insert(0,(threshold,14,counts['under15']))
  return sum(n for s in range(t-60,t+1) for lo,hi,n in bands if max(lo,20-(t-s))<=min(hi,60-(t-s)))
 def q(a):return dict(median=float(np.median(a)),low=float(np.quantile(a,.025)),high=float(np.quantile(a,.975)))
 for population in ['all','us_born']:
@@ -38,8 +43,8 @@ for population in ['all','us_born']:
   for cy,sub in z.groupby('year'):
    Nc=6*sub.loc[sub.circ.eq(1),'weight'].sum();Nf=6*sub.loc[sub.circ.eq(1)&sub.foreign_born.eq(1),'weight'].sum()
    for threshold in [18,15,10]:
-    for missing in [1,2,5,10]:
-     for history in [.5,1,2,5]:
+    for missing in source_values['assumptions']['setting_multipliers']:
+     for history in source_values['assumptions']['historical_multipliers']:
       count=stock(int(cy+1),threshold)*missing*history
       stocks.append(dict(**meta,cycle=int(cy),threshold=threshold,missing_multiplier=missing,historical_multiplier=history,stock=count,circ_population=Nc,fraction=min(1,count/Nc),fraction_foreign_unresolved=min(1,(count+Nf)/Nc)))
   p0raw=np.average(z.loc[~isc,outcome],weights=w[~isc]);p1raw=np.average(z.loc[isc,outcome],weights=w[isc]);raw.append(dict(**meta,pU=p0raw,pC=p1raw,min_fraction=max(0,(p1raw-p0raw)/(1-p0raw))))
@@ -76,7 +81,7 @@ for population in ['all','us_born']:
      pk=expit(logit(p0)+np.log(rk));pi=(pC-fa*(wc@pa)-fk*(wc@pk))/fi;valid=(pi>=0)&(pi<=1)
      rows.append(pd.DataFrame(dict(fI=fi,fA=fa,fK=fk,OR_A=ra,OR_K=rk,pI_marginal=pi,marginal_feasible=valid,infant_marginal_OR=np.where(valid,(pi/(1-pi))/(pU/(1-pU)),np.nan))))
    target=OUT/f'mixed_simplex_{population}_{outcome}_{estimate}.csv.gz'
-   if not target.exists():pd.concat(rows,ignore_index=True).to_csv(target,index=False)
+   pd.concat(rows,ignore_index=True).to_csv(target,index=False)
   for f in fractions:
    pp=P0+D/f;valid=Fmax<=f;probs.append(dict(**meta,fraction=f,p_feasible_all_strata=float(valid.mean()),p_feasible_flexible_fraction=float((Fmin<=f).mean()),p_positive_and_feasible=float(((D>0)&valid).mean()),p_negative_and_feasible=float(((D<0)&valid).mean()),p_infeasible=float((~valid).mean()),p_positive_original=su['p_positive']))
   # Choice-driven subset v uses effective fraction; outputs explicit full grid.

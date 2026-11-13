@@ -1,0 +1,79 @@
+{
+  "newborn": {
+    "source_id": "S01",
+    "url": "https://www.cdc.gov/nchs/data/hestat/circumcision_2013/circumcision_2013_table.pdf",
+    "locator": "Table, All regions, percent circumcised, 1979\u20131996 rows",
+    "denominator": "Male newborns discharged after birth hospitalization",
+    "units": "percent",
+    "values": {
+      "1979": 64.5,
+      "1980": 64.7,
+      "1981": 64.9,
+      "1982": 62.5,
+      "1983": 63.2,
+      "1984": 62.4,
+      "1985": 59.5,
+      "1986": 59.4,
+      "1987": 58.6,
+      "1988": 58.0,
+      "1989": 58.8,
+      "1990": 59.0,
+      "1991": 61.1,
+      "1992": 60.7,
+      "1993": 59.5,
+      "1994": 62.0,
+      "1995": 64.1,
+      "1996": 60.2
+    },
+    "purpose": "descriptive extraction only, not an NHANES infant-share estimate"
+  },
+  "procedures": {
+    "source_id": "S07",
+    "url": "https://www.cdc.gov/nchs/data/series/sr_13/sr13_139.pdf",
+    "locator": "Table 11, printed p74 / PDF p80, ICD-9-CM64.0, combined ambulatory/inpatient age columns",
+    "year": 1996,
+    "units": "procedures (published table units thousands, multiplied by1000)",
+    "counts": {
+      "under15": 92000,
+      "15to44": 15000,
+      "45to64": 13000,
+      "65plus": 21000
+    },
+    "reported_total": 142000,
+    "rounding_note": "Age cells sum to141000; published total142000. Preserve rounding, do not reconcile by changing cells.",
+    "sampling_uncertainty": "Point estimates, not upper confidence limits; no age-cell covariance extracted",
+    "snapshot_sha256": "66660e119ab248358b9c10df1e8f5e58362cca6c75929fa241ceba3ec3cd0762"
+  },
+  "assumptions": {
+    "infant_shares": [
+      0.95,
+      0.9,
+      0.8
+    ],
+    "adult_shares": [
+      0.03,
+      0.05,
+      0.1
+    ],
+    "setting_multipliers": [
+      1,
+      2,
+      5,
+      10
+    ],
+    "historical_multipliers": [
+      0.5,
+      1,
+      2,
+      5
+    ],
+    "annual_history": "constant1996 counts, then scenario multipliers",
+    "retention": "all compatible procedures retained, no mortality/emigration discount",
+    "adult_age_minimum": 18,
+    "count_envelope_current_age_range": [
+      20,
+      60
+    ],
+    "shares_are_estimated": false
+  }
+}

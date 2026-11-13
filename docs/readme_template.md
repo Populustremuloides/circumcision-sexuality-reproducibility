@@ -65,6 +65,6 @@ Alternatively install R and `survey` and put `Rscript` on PATH. The reference co
 
 The Maloney primary sample includes all 326 eligible men with the three required responses. The former 325-person exclusion is retained as an explicitly labeled sensitivity check. This sample is not pooled with NHANES.
 
-Timing sensitivity scenarios retain the earlier Gaussian approximation and are not silently relabeled as direct-posterior results. They cannot identify the probability that infant circumcision caused the association. [Run and interpret timing scenarios](analyses/timing/README.md).
+Timing sensitivity scenarios retain the earlier Gaussian approximation and are not silently relabeled as direct-posterior results. They cannot identify the probability that infant circumcision caused the association. [Timing evidence and endpoint package](analyses/timing/README.md) contains the 14-source register, numerical extraction, derivations, generated endpoint tables and a reporting guide.
 
 The release preserves the clean public-code history without importing exploratory development commits. Its [analytical history](docs/analytical_history.md) documents methodological development and limitations. Sparse gay-identity fits and imperfect simulation coverage are retained in the [validation report](docs/validation.md).

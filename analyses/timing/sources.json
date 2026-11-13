@@ -1,0 +1,178 @@
+{
+  "audit_date": "2026-11-13",
+  "review_type": "Targeted structured audit, not a systematic review",
+  "sources": [
+    {
+      "id": "S01",
+      "citation": "Owings, Uddin, and Williams, 2013, CDC/NCHS",
+      "title": "Trends in Circumcision for Male Newborns in U.S. Hospitals, 1979\u20132010.",
+      "urls": [
+        "https://www.cdc.gov/nchs/data/hestat/circumcision_2013/circumcision_2013.htm"
+      ],
+      "access": "Official report and methods reviewed.",
+      "evidence": "National probability sample of birth hospitalizations. Published annual newborn rates cover 1979\u20132010. The series excludes procedures after discharge and outside the sampled hospital setting.",
+      "decision": "Primary historical birth-hospitalization anchor for overlapping birth years, with sampling uncertainty and explicit missing-setting adjustments. It leaves older birth cohorts uncovered. The denominator is male newborn birth hospitalizations, not circumcised adult men. Birthplace and survival/migration comparability must be addressed before combining with adult prevalence.",
+      "quantitative_role": "Birth-cohort coverage and descriptive newborn-rate extract only; no infant-share estimate"
+    },
+    {
+      "id": "S02",
+      "citation": "Earlier NCHS newborn trends, 1979\u20131999",
+      "title": "",
+      "urls": [
+        "https://www.cdc.gov/nchs/data/hestat/circumcisions/circumcisions.htm"
+      ],
+      "access": "Official text and indexed table reviewed.",
+      "evidence": "Older NHDS tabulations include race and region. Some annual national values differ from the later report.",
+      "decision": "Definition and version audit only until denominator, newborn identification, and coding differences are reconciled. Do not average the two versions or count them as independent datasets. Race categories are not automatically comparable to NHANES race/ethnicity categories.",
+      "quantitative_role": "Context or excluded from quantitative calibration"
+    },
+    {
+      "id": "S03",
+      "citation": "El Bcheraoui et al., 2014, JAMA Pediatrics",
+      "title": "",
+      "urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC4578797/"
+      ],
+      "access": "Full text, methods, and age counts reviewed.",
+      "evidence": "SDI medical claims, 2001\u20132010. Of 1,400,920 circumcised males, 93.3% were newborns and 95.3% were infants. The article reports 28,197 aged 1\u20139 and 37,543 aged at least 10, including 8,590 aged 10\u201318. Age definitions must follow the tables because the abstract contains inconsistent inequality rendering.",
+      "decision": "Context and age-pattern sensitivity. The data combine convenience-sampled inpatient encounters and outpatient providers, with differing dates and ascertainment. These counts are neither national annual totals nor cohort-specific lifetime timing proportions. Do not convert the large sample size into a narrowly concentrated timing prior for NHANES.",
+      "quantitative_role": "Context or excluded from quantitative calibration"
+    },
+    {
+      "id": "S04",
+      "citation": "Hart-Cooper et al., 2014, Pediatrics",
+      "title": "Circumcision of Privately Insured Males Aged 0 to 18 Years in the United States.",
+      "urls": [
+        "https://pubmed.ncbi.nlm.nih.gov/25332502/",
+        "https://publications.aap.org/pediatrics/article-abstract/134/5/950/75981/Circumcision-of-Privately-Insured-Males-Aged-0-to"
+      ],
+      "access": "Indexed publisher abstract and PubMed abstract, not the complete methods/tables.",
+      "evidence": "MarketScan 2010. Of 156,247 pediatric procedures, 93.6% were neonatal and 6.4% postneonatal. The birth cohort component reports 6.1% of uncircumcised neonates circumcised by their first birthday.",
+      "decision": "Useful distinction between neonatal and later infancy. Privately insured children and contemporary cohorts limit transportability. No adult operations are included. Complete follow-up and enrollment definitions must be verified before quantitative use.",
+      "quantitative_role": "Context or excluded from quantitative calibration"
+    },
+    {
+      "id": "S05",
+      "citation": "Wiswell et al., 1993, Pediatrics",
+      "title": "Circumcision in children beyond the neonatal period.",
+      "urls": [
+        "https://pubmed.ncbi.nlm.nih.gov/8233738/"
+      ],
+      "access": "Abstract reviewed.",
+      "evidence": "U.S. Army hospital births during 1985\u20131992, with detailed records for 476 postneonatal procedures. Mean age in that selected group was 2.92 years. The abstract also describes 32,072 boys not circumcised during neonatal hospitalization.",
+      "decision": "Historical childhood timing and indications. Do not divide 476 by 32,072 to estimate cumulative incidence because the detailed records represent only a portion of later procedures. Military-system selection and follow-up require full-text verification before calibration.",
+      "quantitative_role": "Context or excluded from quantitative calibration"
+    },
+    {
+      "id": "S06",
+      "citation": "Nabavizadeh et al., 2022, PLOS ONE",
+      "title": "Incidence of circumcision among insured adults in the United States.",
+      "urls": [
+        "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0275207"
+      ],
+      "access": "Full text and denominator construction reviewed.",
+      "evidence": "MarketScan commercial claims, men 18\u201364, 2015\u20132018, with 12,298 circumcision claims. Almost all were outpatient. The authors estimate the uncircumcised population at risk using historical newborn circumcision rates.",
+      "decision": "Adult age/setting patterns and a modern rate benchmark, with coverage and historical extrapolation scenarios. The published rate is not based on directly observed uncircumcised person-time and is not independent of newborn-rate assumptions. Claims denominators must be reconstructed before extrapolation. Raw commercial claims are not openly available from the article. Diagnostic labels do not establish voluntary choice, sexual motivation, or chronology relative to sexual behavior.",
+      "quantitative_role": "Context or excluded from quantitative calibration"
+    },
+    {
+      "id": "S07",
+      "citation": "Owings and Kozak, 1998, NCHS Series 13 No. 139",
+      "title": "Ambulatory and inpatient procedures in the United States, 1996.",
+      "urls": [
+        "https://www.cdc.gov/nchs/data/series/sr_13/sr13_139.pdf"
+      ],
+      "access": "Official PDF downloaded. Table 11, printed page 74 / PDF page 80, code 64.0 and headers checked in extracted layout text. Methods checked.",
+      "evidence": "Combined NHDS and NSAS national estimates, with separate inpatient and ambulatory components. Circumcision counts are given for under 15, 15\u201344, 45\u201364, and 65+. Units are thousands. Newborn inpatient records are excluded, but the under-15 category is not equivalent to adult or even postinfancy surgery. Some cells are flagged unreliable.",
+      "decision": "Promising historical anchor for counts with age bands. Includes hospital and freestanding ambulatory surgery centers, but excludes some office, federal, and other settings. It cannot independently furnish a hard upper bound on all procedures. Never treat suppressed cells as zero. Published 1994\u20131995 companion reports are follow-up extraction candidates.",
+      "quantitative_role": "1996 annual procedure-count anchor for conditional stock scenarios"
+    },
+    {
+      "id": "S08",
+      "citation": "Graves, 1995, NCHS Series 13 No. 122",
+      "title": "Detailed diagnoses and procedures, NHDS 1993.",
+      "urls": [
+        "https://www.cdc.gov/nchs/data/series/sr_13/sr13_122.pdf"
+      ],
+      "access": "Official report scope and coding inspected. No age-specific numerical circumcision estimate extracted for this audit.",
+      "evidence": "Inpatient procedures, not comprehensive outpatient surgery.",
+      "decision": "Historical component only. This is the source cited by Laumann et al. for the rarity of nonnewborn circumcision. That citation does not demonstrate a complete count of later procedures across settings.",
+      "quantitative_role": "Context or excluded from quantitative calibration"
+    },
+    {
+      "id": "S09",
+      "citation": "Laumann, Masi, and Zuckerman, 1997, JAMA",
+      "title": "Circumcision in the United States.",
+      "urls": [
+        "https://jamanetwork.com/journals/jama/article-abstract/414922",
+        "https://cirp.org/library/general/laumann/"
+      ],
+      "access": "Publisher abstract and article methods in a third-party transcription. Host editorial notes were excluded from the evidence.",
+      "evidence": "NHSLS 1992 national probability survey. The article explicitly states that respondents were not asked whether circumcision occurred as newborns or later.",
+      "decision": "Adult prevalence/background only, not direct timing evidence. Its neonatal interpretation is an assumption supported partly by S08, not a measured timing distribution. No timing prior will be estimated from this study.",
+      "quantitative_role": "Context or excluded from quantitative calibration"
+    },
+    {
+      "id": "S10",
+      "citation": "NCHS questionnaire compendium, NHIS 1980\u20131984",
+      "title": "",
+      "urls": [
+        "https://www.cdc.gov/nchs/data/series/sr_01/sr01_024acc.pdf"
+      ],
+      "access": "Official PDF downloaded, all 213 pages searched. One circumcision item found at PDF page 93 / printed page 87 in the sample-child birth section.",
+      "evidence": "The item asks whether the child was ever circumcised. No age-at-procedure follow-up appears with that item.",
+      "decision": "Does not establish timing. The placement within a birth section must not be interpreted as a neonatal-only question. This search was confined to this compendium and does not prove that no other NHIS instrument ever asked about timing.",
+      "quantitative_role": "Context or excluded from quantitative calibration"
+    },
+    {
+      "id": "S11",
+      "citation": "NCHS National Survey of Ambulatory Surgery products",
+      "title": "",
+      "urls": [
+        "https://archive.cdc.gov/www_cdc_gov/nchs/nsas/nsas_products.htm",
+        "https://www.cdc.gov/nchs/data/nhsr/nhsr011.pdf"
+      ],
+      "access": "Official products page and 2006 report inspected. Circumcision was not located by text search in the 2006 published report.",
+      "evidence": "Public reports cover 1994, 1995, 1996, and 2006 ambulatory surgery. Availability of a survey does not establish an extractable, reliable circumcision-specific estimate.",
+      "decision": "Data/codebook extraction route for adult count coverage. Verify procedure code detail, age, design variables, and cell reliability before adding numerical anchors.",
+      "quantitative_role": "Context or excluded from quantitative calibration"
+    },
+    {
+      "id": "S12",
+      "citation": "Contemporary freestanding children's-hospital study, 2020",
+      "title": "",
+      "urls": [
+        "https://pubmed.ncbi.nlm.nih.gov/32199703/"
+      ],
+      "access": "Abstract reviewed.",
+      "evidence": "PHIS, 2010\u20132017, selected pediatric hospitals and circumcisions without additional procedures.",
+      "decision": "Illustrates setting selection in age distributions. Exclude from national timing calibration and adult totals. It cannot resolve historical adult timing.",
+      "quantitative_role": "Context or excluded from quantitative calibration"
+    },
+    {
+      "id": "S13",
+      "citation": "Begley et al., 2008, adult-circumcision willingness among U.S. MSM",
+      "title": "",
+      "urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC2443289/",
+        "https://stacks.cdc.gov/view/cdc/4256/cdc_4256_DS1.pdf"
+      ],
+      "access": "Indexed methods/results and abstract-level material reviewed; PMC access intermittently returned a browser challenge.",
+      "evidence": "Gay-pride-event survey of willingness to undergo adult circumcision, not a national count of procedures actually performed.",
+      "decision": "Exclude from quantitative timing calibration. Willingness is not uptake. No verified estimate of differential lifetime timing by male\u2013male behavior was obtained from this source.",
+      "quantitative_role": "Context or excluded from quantitative calibration"
+    },
+    {
+      "id": "S14",
+      "citation": "Introcaso et al., 2013, NHANES adult prevalence",
+      "title": "",
+      "urls": [
+        "https://pubmed.ncbi.nlm.nih.gov/23965763/"
+      ],
+      "access": "Abstract reviewed.",
+      "evidence": "",
+      "decision": "Context and possible prevalence cross-check. It overlaps the study's NHANES source and is not independent timing evidence. Do not use it as an external prior and then count NHANES prevalence again as independent information.",
+      "quantitative_role": "Context or excluded from quantitative calibration"
+    }
+  ]
+}
