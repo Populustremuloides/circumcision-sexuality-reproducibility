@@ -14,3 +14,7 @@ __pycache__/
 *.png
 *.csv
 *.npz
+
+# Selected publication figures explicitly shared by the author.
+!/figures/*.png
+!/figures/*.pdf

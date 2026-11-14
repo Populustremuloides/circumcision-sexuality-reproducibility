@@ -2,7 +2,11 @@
 
 Code for NHANES 2005–2016 and the separate Maloney regret/self-concept supplement. Each headline question has a shared sample and model specification, separate frequentist and Bayesian estimators, and a runnable analysis ID.
 
-These observational, exploratory associations are not causal effects. The Bayesian reanalysis followed examination of the frequentist results. The repository excludes source data, generated datasets, model-output files and manuscript files; the concise documentation tables below are generated from validated local runs. No cross-study meta-analysis is included.
+These observational, exploratory associations are not causal effects. The Bayesian reanalysis followed examination of the frequentist results. The repository includes two selected sensitivity figures and excludes source data, generated datasets, model-output files and manuscript files; the concise documentation tables below are generated from validated local runs. No cross-study meta-analysis is included.
+
+## Selected figures
+
+[View the two selected figures, download publication files, and read their assumptions](figures/README.md). Rebuild them with `python -m analyses.figures.reproduce` after reproducing NHANES.
 
 ## Headline questions: side-by-side results
 
