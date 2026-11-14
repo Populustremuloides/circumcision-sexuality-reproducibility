@@ -1,0 +1,2 @@
+# Matplotlib wraps SVG path coordinates with trailing spaces by design.
+figures/*.svg whitespace=-blank-at-eol

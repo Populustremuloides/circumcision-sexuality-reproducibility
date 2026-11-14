@@ -50,7 +50,7 @@ class Survey:
         units = self.data.loc[mask, ['stratum','psu']].drop_duplicates()
         return len(units) - units.stratum.nunique()
 
-    def model(self, outcome, rhs, mask, label, jackknife=False):
+    def model(self, outcome, rhs, mask, label, jackknife=False, return_fit=False):
         mask = np.asarray(mask) & self.data.eligible.to_numpy()
         y, x = patsy.dmatrices(f'{outcome} ~ {rhs}', self.data.loc[mask], return_type='dataframe')
         idx = x.index.to_numpy()
@@ -116,6 +116,12 @@ class Survey:
                     variance += (len(ids)-1)/len(ids) * (rf.params[j]-beta)**2
             row['jackknife_se'] = np.sqrt(variance)
             row['jackknife_taylor_se_ratio'] = np.sqrt(variance)/se
+        if return_fit:
+            # Export the actual fit used above; no new model or variance calculation.
+            details = dict(coefficients=fit.params.copy(), covariance=covariance.copy(),
+                           columns=list(x.columns), indices=idx.copy(), X=X.copy(),
+                           outcome=Y.copy(), normalized_weights=w.copy())
+            return row, domain, details
         return row, domain
 
     def prevalence(self, outcome, mask):

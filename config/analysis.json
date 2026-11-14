@@ -62,7 +62,7 @@
     "variance": "Stratified delete-one-PSU jackknife with paired restandardization",
     "multiplicity": "Holm five; failed tests retained as correction placeholders only"
   },
-  "numerical_implementation": "scripts/; this document describes the implementation and does not dynamically override its formulas",
+  "numerical_implementation": "src/frequentist/; this document describes the implementation and does not dynamically override its formulas",
   "reproduction": "python scripts/reproduce.py",
-  "supplement": "Corrected Maloney circumcised-only masculinity, general visibility, and regret analysis; see docs/methods.md."
+  "supplement": "Corrected Maloney circumcised-only masculinity, general visibility, and regret analysis; optional via --with-maloney; see docs/methods.md."
 }

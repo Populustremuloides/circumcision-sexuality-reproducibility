@@ -1,24 +1,21 @@
 """Timing-component OR trade-offs with covariate-varying timing composition.
-Derives illustrative curves from the existing calibrated Bayesian fit.
+Derives illustrative curves from the existing survey-weighted logistic fit.
 """
 import os
 os.environ['OPENBLAS_NUM_THREADS']='1'
-os.environ['MPLCONFIGDIR']='/tmp/circ-timing-matplotlib'
 from pathlib import Path
 import sys,json,hashlib
-import numpy as np,pandas as pd,patsy
+import numpy as np,pandas as pd
 from scipy.special import expit
 from scipy.optimize import brentq
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-from matplotlib.ticker import ScalarFormatter
 ROOT=Path(__file__).resolve().parents[2];REPO=ROOT;OUT=ROOT/'outputs/selected_figures/timing';OUT.mkdir(parents=True,exist_ok=True)
 sys.path.insert(0,str(REPO))
-from src.specification import ADJUST
 from analyses.timing.endpoints import endpoint
-D=pd.read_csv(REPO/'data/analysis.csv.gz');_,xx=patsy.dmatrices('msm_ever ~ '+ADJUST['full'],D.loc[D.eligible],return_type='dataframe');z=D.loc[xx.index];take=z.circ.eq(1);w=z.loc[take,'weight'].to_numpy();w/=w.sum();X=xx.to_numpy()[take];j=list(xx.columns).index('circ');X[:,j]=0
-archive=REPO/'outputs/bayesian/headline/nhanes.msm_ever.adjusted.npz';cache=np.load(archive);assert list(cache['columns'])==list(xx.columns);b=cache['weights']@cache['draws'];eta=X@b;pU=expit(eta);pC=expit(eta+b[j]);delta=pC-pU;observed=np.exp(b[j]);minimum=w@(delta/(1-pU));gap=w@delta
+from src.frequentist.export import load_primary
+cache, fit_metadata = load_primary()
+archive=REPO/'outputs/frequentist/headline/nhanes.msm_ever.adjusted.npz'
+X=cache['X0'];w=cache['target_weights'];b=cache['coefficients'];j=int(cache['circ_index'])
+eta=X@b;pU=expit(eta);pC=expit(eta+b[j]);delta=pC-pU;observed=np.exp(b[j]);minimum=w@(delta/(1-pU));gap=w@delta
 shares=[.01,.015,.025,.05,.10]
 def solve(f,adult):
  pA=np.ones_like(pU) if np.isinf(adult) else expit(eta+np.log(adult))
@@ -75,6 +72,6 @@ for target,dashes,label in [(.10,(0,(12,4)),'90% of excess before age 18'),
  hq=pd.DataFrame(half_rows);contribution_rows+=half_rows
  if target==.5:hq.to_csv(OUT/'equal_contribution_curve.csv',index=False)
 pd.DataFrame(contribution_rows).to_csv(OUT/'contribution_curves.csv',index=False)
-meta=dict(outcome='lifetime male-male sexual behavior',population='NHANES2005-2016 eligible men20-59, original complete cases',model='direct calibrated Bayesian, posterior coefficient mean',adjusted_OR_at_coefficient_mean=float(observed),standardized_baseline=float(w@pU),standardized_circumcised=float(w@pC),minimum_adult_share=float(minimum),halfway_reference=mid,illustrated_5pct_adult_only_OR=float(adult_end),maximum_mixture_error=max(r['max_mixture_error'] for r in rows),sha256={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in [archive,REPO/'data/analysis.csv.gz',Path(__file__)]})
+meta=dict(outcome='lifetime male-male sexual behavior',population='NHANES2005-2016 eligible men20-59, original complete cases',model='survey-weighted logistic regression, fitted coefficients',adjusted_OR=float(observed),standardized_baseline=float(w@pU),standardized_circumcised=float(w@pC),minimum_adult_share=float(minimum),halfway_reference=mid,illustrated_5pct_adult_only_OR=float(adult_end),maximum_mixture_error=max(r['max_mixture_error'] for r in rows),sha256={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in [archive,REPO/'data/analysis.csv.gz',Path(__file__)]})
 (OUT/'validation.json').write_text(json.dumps(meta,indent=2)+'\n')
 print(json.dumps(meta,indent=2));print(pd.DataFrame(ends).to_string(index=False))

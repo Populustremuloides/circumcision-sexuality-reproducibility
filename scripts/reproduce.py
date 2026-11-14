@@ -1,78 +1,29 @@
-"""Download inputs, regenerate estimates, and run numerical verification."""
-import argparse
-from datetime import datetime, timezone
-import hashlib
-import json
-import os
+"""Reproduce NHANES estimates, validation, timing scenarios and selected figures."""
+import argparse,json,os,shutil,subprocess,sys,time
+from datetime import datetime,timezone
 from pathlib import Path
-import shutil
-import subprocess
-import sys
-import time
-
-ROOT = Path(__file__).resolve().parents[1]
-
-
+ROOT=Path(__file__).resolve().parents[1]
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--offline', action='store_true', help='Require checksum-verified cached inputs.')
-    parser.add_argument('--nhanes-only', action='store_true', help='Omit the separate Maloney supplement.')
-    parser.add_argument('--r-check', action='store_true', help='Also verify core estimates with R survey.')
-    parser.add_argument('--frequentist-only', action='store_true', help='Run the original frequentist pipeline only.')
-    parser.add_argument('--validation', action='store_true', help='Run alternative Bayesian comparisons and 4,000 targeted simulations.')
-    args = parser.parse_args()
-    if args.r_check and not shutil.which('Rscript'):
-        parser.error('--r-check requires Rscript on PATH and the R survey package; see README.md.')
-    out = ROOT / 'outputs'
-    logs = out / 'logs'
-    logs.mkdir(parents=True, exist_ok=True)
-    env = dict(os.environ, OPENBLAS_NUM_THREADS='1', OMP_NUM_THREADS='1',
-               VECLIB_MAXIMUM_THREADS='1', MKL_NUM_THREADS='1', MPLBACKEND='Agg',
-               MPLCONFIGDIR=str(out / '.matplotlib'))
-    scripts = ['download.py', 'analyze.py', 'behavior_extension.py', 'identity_subgroups.py',
-               'explanation_analysis.py', 'validate_explanation_analysis.py', 'validate.py', 'plot_main.py']
-    if not args.nhanes_only:
-        scripts += ['maloney_supplement.py']
-    if args.r_check:
-        scripts += ['reproduce_survey.R']
-    status = dict(status='running', started_utc=datetime.now(timezone.utc).isoformat(),
-                  python=sys.version, stages=[], arguments=vars(args),
-                  source_specification_sha256=hashlib.sha256((ROOT/'config/sources.json').read_bytes()).hexdigest())
-    status_path = out / 'run.json'
-    status_path.write_text(json.dumps(status, indent=2) + '\n')
-    for script in scripts:
-        print(f'Running {script} ...', flush=True)
-        command = ['Rscript' if script.endswith('.R') else sys.executable, str(ROOT/'scripts'/script)]
-        if script == 'download.py' and args.offline:
-            command += ['--offline']
-        start = time.monotonic()
-        with (logs/(script+'.log')).open('w') as log:
-            result = subprocess.run(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
-        status['stages'].append(dict(script=script, exit_code=result.returncode,
-                                     elapsed_seconds=round(time.monotonic()-start, 2)))
-        if result.returncode:
-            status.update(status='failed', failed_stage=script)
-            status_path.write_text(json.dumps(status, indent=2)+'\n')
-            print((logs/(script+'.log')).read_text()[-6000:])
-            raise SystemExit(result.returncode)
-        status_path.write_text(json.dumps(status, indent=2)+'\n')
-    if not args.frequentist_only:
-        modules = ['src.bayesian.approximation', 'analyses.nhanes.run']
-        if not args.nhanes_only: modules += ['src.bayesian.maloney']
-        if args.validation: modules += ['validation.bayesian.compare', 'validation.simulations.targeted']
-        modules += ['validation.release', 'scripts.build_results']
-        for module in modules:
-            print(f'Running {module} ...', flush=True)
-            with (logs/(module+'.log')).open('w') as log:
-                result=subprocess.run([sys.executable,'-m',module],cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT)
-            status['stages'].append(dict(module=module,exit_code=result.returncode))
-            if result.returncode:
-                status.update(status='failed',failed_stage=module);status_path.write_text(json.dumps(status,indent=2)+'\n');print((logs/(module+'.log')).read_text()[-6000:]);raise SystemExit(result.returncode)
-            status_path.write_text(json.dumps(status,indent=2)+'\n')
-    status.update(status='passed', completed_utc=datetime.now(timezone.utc).isoformat())
-    status_path.write_text(json.dumps(status, indent=2)+'\n')
-    print('Reproduction and checks passed. Generated results are in outputs/.', flush=True)
-
-
-if __name__ == '__main__':
-    main()
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--offline',action='store_true',help='Require checksum-verified cached source files.')
+    p.add_argument('--with-maloney',action='store_true',help='Also reproduce the separate optional Maloney supplement.')
+    p.add_argument('--r-check',action='store_true',help='Also compare eight models with R survey.')
+    a=p.parse_args()
+    if a.r_check and not shutil.which('Rscript'):p.error('Rscript and the survey package are required for --r-check.')
+    out=ROOT/'outputs';logs=out/'logs';logs.mkdir(parents=True,exist_ok=True)
+    env=dict(os.environ,OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1',VECLIB_MAXIMUM_THREADS='1',MKL_NUM_THREADS='1',MPLBACKEND='Agg',MPLCONFIGDIR=str(out/'.matplotlib'))
+    modules=[('src.data.download',(['--offline'] if a.offline else [])+(['--with-maloney'] if a.with_maloney else [])),('src.frequentist.nhanes',[]),('src.frequentist.behavior',[]),('src.frequentist.identity',[]),('src.frequentist.explanations',[]),('validation.frequentist.explanations',[]),('validation.frequentist.core',[]),('analyses.nhanes.run',[])]
+    if a.with_maloney:modules.append(('analyses.maloney.run',[]))
+    modules += [('validation.release',['--with-maloney'] if a.with_maloney else []),('analyses.timing.reproduce',[]),('analyses.figures.reproduce',[]),('scripts.build_results',[]),('validation.repository',[])]
+    stages=[(m,[sys.executable,'-m',m]+args) for m,args in modules]
+    if a.r_check:stages.insert(-1,('R_survey',['Rscript','validation/r_survey/reproduce.R']))
+    status=dict(status='running',started_utc=datetime.now(timezone.utc).isoformat(),arguments=vars(a),stages=[])
+    for name,command in stages:
+        print('Running '+name,flush=True);start=time.monotonic()
+        with (logs/(name+'.log')).open('w') as log:r=subprocess.run(command,cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT)
+        status['stages'].append(dict(module=name,command=command,exit_code=r.returncode,seconds=round(time.monotonic()-start,2)))
+        if r.returncode:status.update(status='failed',failed_stage=name)
+        (out/'run.json').write_text(json.dumps(status,indent=2)+'\n')
+        if r.returncode:print((logs/(name+'.log')).read_text()[-6000:]);raise SystemExit(r.returncode)
+    status.update(status='passed',completed_utc=datetime.now(timezone.utc).isoformat());(out/'run.json').write_text(json.dumps(status,indent=2)+'\n');print('Reproduction passed.')
+if __name__=='__main__':main()

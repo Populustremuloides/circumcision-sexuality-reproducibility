@@ -1,6 +1,6 @@
 # Independent R survey implementation for reproducing the executed Python models.
 # Executed verification is recorded in outputs/r_survey_reference_*.
-# Run from the project directory after analyze.py generates data/analysis.csv.gz.
+# Run from the project directory after python scripts/reproduce.py generates data/analysis.csv.gz.
 library(survey)
 options(survey.lonely.psu = 'fail')
 d <- read.csv(gzfile('data/analysis.csv.gz'), na.strings=c('', 'NA'))

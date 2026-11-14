@@ -12,8 +12,7 @@
       "outcome": "msm_ever",
       "formula": "msm_ever ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born",
       "sample": "eligible, outcome-specific complete cases",
-      "frequentist": "src/frequentist/nhanes.py",
-      "bayesian": "src/bayesian/headline.py"
+      "frequentist": "src/frequentist/nhanes.py"
     },
     {
       "id": "nhanes.identity_gb.adjusted",
@@ -21,8 +20,7 @@
       "outcome": "identity_gb",
       "formula": "identity_gb ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born",
       "sample": "eligible, outcome-specific complete cases",
-      "frequentist": "src/frequentist/nhanes.py",
-      "bayesian": "src/bayesian/headline.py"
+      "frequentist": "src/frequentist/nhanes.py"
     },
     {
       "id": "nhanes.identity_gay.adjusted",
@@ -30,8 +28,7 @@
       "outcome": "identity_gay",
       "formula": "identity_gay ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born",
       "sample": "eligible, outcome-specific complete cases",
-      "frequentist": "src/frequentist/nhanes.py",
-      "bayesian": "src/bayesian/headline.py"
+      "frequentist": "src/frequentist/nhanes.py"
     },
     {
       "id": "nhanes.identity_bi.adjusted",
@@ -39,8 +36,7 @@
       "outcome": "identity_bi",
       "formula": "identity_bi ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born",
       "sample": "eligible, outcome-specific complete cases",
-      "frequentist": "src/frequentist/nhanes.py",
-      "bayesian": "src/bayesian/headline.py"
+      "frequentist": "src/frequentist/nhanes.py"
     }
   ]
 }

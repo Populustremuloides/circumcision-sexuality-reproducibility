@@ -1,19 +1,10 @@
-# Results and reproducible questions
+# Results and code
 
-Generated from validated local result records. The two methods use identical participants and formulas for each headline question.
-
-
-
-| Question | Frequentist OR (95% CI) | Bayesian OR (95% calibrated interval) | P(OR > 1) | Specification and code |
-|---|---:|---:|---:|---|
-| Lifetime male–male behavior | 1.54 (1.16–2.05) | 1.48 (1.14–1.95) | 99.9% | [specification](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/config/analyses.json#L10) · [frequentist](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/analyses/nhanes/run.py#L8) · [Bayesian](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/bayesian/headline.py#L9) |
-| Gay/bisexual versus heterosexual identity | 1.25 (0.85–1.84) | 1.22 (0.86–1.75) | 86.3% | [specification](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/config/analyses.json#L19) · [frequentist](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/analyses/nhanes/run.py#L8) · [Bayesian](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/bayesian/headline.py#L9) |
-| Gay versus heterosexual identity | 1.52 (0.95–2.42) | 1.40 (0.94–2.12) | 94.8% | [specification](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/config/analyses.json#L28) · [frequentist](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/analyses/nhanes/run.py#L8) · [Bayesian](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/bayesian/headline.py#L9) |
-| Bisexual versus heterosexual identity | 0.94 (0.49–1.79) | 0.94 (0.54–1.70) | 42.1% | [specification](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/config/analyses.json#L37) · [frequentist](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/analyses/nhanes/run.py#L8) · [Bayesian](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/bayesian/headline.py#L9) |
+Generated from validated frequentist records. All p-values are nominal and two-sided unless a named Holm family is displayed.
 
 ## Lifetime male–male behavior
 
-Analysis ID: `nhanes.msm_ever.adjusted`. N = 9,161; events = 498.
+Analysis `nhanes.msm_ever.adjusted`; N = 9,161, events = 498.
 
 ```sh
 python -m analyses.nhanes.run --analysis nhanes.msm_ever.adjusted
@@ -21,15 +12,11 @@ python -m analyses.nhanes.run --analysis nhanes.msm_ever.adjusted
 
 Formula: `msm_ever ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born`.
 
-[specification](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/config/analyses.json#L10) · [frequentist](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/analyses/nhanes/run.py#L8) · [Bayesian](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/bayesian/headline.py#L9). The survey estimator is implemented in [Survey.model](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/survey/design.py#L53); the Bayesian likelihood and numerical integration are in [logistic.py](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/bayesian/logistic.py#L57).
-
-The command writes matching JSON result records to `outputs/frequentist/headline/nhanes.msm_ever.adjusted.json` and `outputs/bayesian/headline/nhanes.msm_ever.adjusted.json`. Records include the input/specification hashes, code hash, Git commit, sample size and uncertainty.
-
-
+[Specification](../config/analyses.json) · [Runner](../analyses/nhanes/run.py) · [Survey estimator](../src/survey/design.py). Result: `outputs/frequentist/headline/nhanes.msm_ever.adjusted.json`; complete fitted coefficients, covariance and standardization inputs: corresponding `.npz`.
 
 ## Gay/bisexual versus heterosexual identity
 
-Analysis ID: `nhanes.identity_gb.adjusted`. N = 8,962; events = 333.
+Analysis `nhanes.identity_gb.adjusted`; N = 8,962, events = 333.
 
 ```sh
 python -m analyses.nhanes.run --analysis nhanes.identity_gb.adjusted
@@ -37,15 +24,11 @@ python -m analyses.nhanes.run --analysis nhanes.identity_gb.adjusted
 
 Formula: `identity_gb ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born`.
 
-[specification](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/config/analyses.json#L19) · [frequentist](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/analyses/nhanes/run.py#L8) · [Bayesian](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/bayesian/headline.py#L9). The survey estimator is implemented in [Survey.model](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/survey/design.py#L53); the Bayesian likelihood and numerical integration are in [logistic.py](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/bayesian/logistic.py#L57).
-
-The command writes matching JSON result records to `outputs/frequentist/headline/nhanes.identity_gb.adjusted.json` and `outputs/bayesian/headline/nhanes.identity_gb.adjusted.json`. Records include the input/specification hashes, code hash, Git commit, sample size and uncertainty.
-
-
+[Specification](../config/analyses.json) · [Runner](../analyses/nhanes/run.py) · [Survey estimator](../src/survey/design.py). Result: `outputs/frequentist/headline/nhanes.identity_gb.adjusted.json`; complete fitted coefficients, covariance and standardization inputs: corresponding `.npz`.
 
 ## Gay versus heterosexual identity
 
-Analysis ID: `nhanes.identity_gay.adjusted`. N = 8,825; events = 196.
+Analysis `nhanes.identity_gay.adjusted`; N = 8,825, events = 196.
 
 ```sh
 python -m analyses.nhanes.run --analysis nhanes.identity_gay.adjusted
@@ -53,15 +36,11 @@ python -m analyses.nhanes.run --analysis nhanes.identity_gay.adjusted
 
 Formula: `identity_gay ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born`.
 
-[specification](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/config/analyses.json#L28) · [frequentist](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/analyses/nhanes/run.py#L8) · [Bayesian](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/bayesian/headline.py#L9). The survey estimator is implemented in [Survey.model](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/survey/design.py#L53); the Bayesian likelihood and numerical integration are in [logistic.py](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/bayesian/logistic.py#L57).
-
-The command writes matching JSON result records to `outputs/frequentist/headline/nhanes.identity_gay.adjusted.json` and `outputs/bayesian/headline/nhanes.identity_gay.adjusted.json`. Records include the input/specification hashes, code hash, Git commit, sample size and uncertainty.
-
-
+[Specification](../config/analyses.json) · [Runner](../analyses/nhanes/run.py) · [Survey estimator](../src/survey/design.py). Result: `outputs/frequentist/headline/nhanes.identity_gay.adjusted.json`; complete fitted coefficients, covariance and standardization inputs: corresponding `.npz`.
 
 ## Bisexual versus heterosexual identity
 
-Analysis ID: `nhanes.identity_bi.adjusted`. N = 8,766; events = 137.
+Analysis `nhanes.identity_bi.adjusted`; N = 8,766, events = 137.
 
 ```sh
 python -m analyses.nhanes.run --analysis nhanes.identity_bi.adjusted
@@ -69,32 +48,23 @@ python -m analyses.nhanes.run --analysis nhanes.identity_bi.adjusted
 
 Formula: `identity_bi ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born`.
 
-[specification](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/config/analyses.json#L37) · [frequentist](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/analyses/nhanes/run.py#L8) · [Bayesian](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/bayesian/headline.py#L9). The survey estimator is implemented in [Survey.model](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/survey/design.py#L53); the Bayesian likelihood and numerical integration are in [logistic.py](https://github.com/Populustremuloides/circumcision-sexuality-reproducibility/blob/ec2405ca423fc6518324ffe09a2cc89674457c45/src/bayesian/logistic.py#L57).
+[Specification](../config/analyses.json) · [Runner](../analyses/nhanes/run.py) · [Survey estimator](../src/survey/design.py). Result: `outputs/frequentist/headline/nhanes.identity_bi.adjusted.json`; complete fitted coefficients, covariance and standardization inputs: corresponding `.npz`.
 
-The command writes matching JSON result records to `outputs/frequentist/headline/nhanes.identity_bi.adjusted.json` and `outputs/bayesian/headline/nhanes.identity_bi.adjusted.json`. Records include the input/specification hashes, code hash, Git commit, sample size and uncertainty.
+## Figure inputs
 
+The unchanged primary frequentist model gives OR 1.543297 (95% CI 1.162706–2.048467), p = 0.003125. Standardizing to the survey-weighted circumcised complete-case covariate distribution (n = 6,463) gives intact-reference probability 4.448015%, circumcised probability 6.680342%, and gap 2.232327 percentage points. Both figures use these same fitted coefficients and targets. They show point scenarios, without scenario confidence intervals.
 
+[Coefficient export and hash verification](../src/frequentist/export.py) · [Figure checks](../validation/figures.py).
 
-## Other questions
+## Raw survey-weighted prevalence
 
-| Question family | Frequentist implementation | Bayesian implementation | Scope |
+These available-case descriptive prevalences use their own observed circumcision groups. They are not the counterfactual model-standardized figure probabilities.
 
-|---|---|---|---|
+| outcome | circ | n | events | prevalence | se | ci_low | ci_high | kish_n | design_df |
+|---|---|---|---|---|---|---|---|---|---|
+| identity_gb | 0 | 2608 | 68 | 0.0294817 | 0.00412448 | 0.0223075 | 0.0388715 | 1698.98 | 94 |
+| identity_gb | 1 | 6362 | 265 | 0.0433765 | 0.00465166 | 0.0350239 | 0.0536104 | 4212.91 | 94 |
+| msm_ever | 0 | 2702 | 97 | 0.0368974 | 0.00458041 | 0.028806 | 0.0471513 | 1766.21 | 94 |
+| msm_ever | 1 | 6467 | 401 | 0.066746 | 0.00531213 | 0.0569413 | 0.0780991 | 4268.64 | 94 |
 
-| Specific anal/oral behaviors | [behavior.py](../src/frequentist/behavior.py) | [approximation.py](../src/bayesian/approximation.py) | Gaussian/t approximation; not the directly fitted headline method |
-
-| Within-identity associations and interactions | [identity.py](../src/frequentist/identity.py) | [approximation.py](../src/bayesian/approximation.py) | Interaction conclusions remain sensitive to nuisance priors |
-
-| Explanatory contrasts | [explanations.py](../src/frequentist/explanations.py) | [approximation.py](../src/bayesian/approximation.py) | Some estimands are differences, not odds ratios; failed fits retained |
-
-| Maloney regret and self-concept | [maloney.py](../src/frequentist/maloney.py) | [maloney.py](../src/bayesian/maloney.py) | Separate unweighted sample; primary326 and sensitivity325 |
-
-| Later circumcision scenarios | [allocation fits](../analyses/timing/run_allocation.py) | [mixture scenarios](../analyses/timing/run_timing.py) | Conditional assumptions, not observed timing or infant causal effects |
-
-
-
-Run all standard questions with `python scripts/reproduce.py`; add `--validation` for the full-likelihood comparisons and targeted simulations. Timing scenarios are separate opt-in commands documented [here](../analyses/timing/README.md). Full extension tables remain generated locally. No incompatible estimands are presented as interchangeable method comparisons.
-
-## Detailed extension comparisons
-
-See [the generated extension results](extension_results.md) for behavior, identity subgroup/interaction and Maloney comparisons.
+See [extension results](extension_results.md) for the retained sensitivity families.

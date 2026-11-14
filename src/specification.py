@@ -1,4 +1,4 @@
-"""Executable common model specification; both engines use these formulas."""
+"""Executable common model specification; survey-weighted logistic regression formulas."""
 import json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]

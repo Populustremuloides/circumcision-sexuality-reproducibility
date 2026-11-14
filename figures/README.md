@@ -2,7 +2,7 @@
 
 These are the two selected NHANES figures for manuscript development. The PNG, PDF and SVG files preserve the approved appearance; explanatory text is kept outside the images. No participant data or model-draw files are included.
 
-Both figures use the direct, survey-calibrated Bayesian lifetime-behavior model at its posterior coefficient mean, standardized over circumcised complete-case respondents. The intact-reference probability is 4.5378%, the circumcised probability is 6.5821%, and the gap is 2.0443 percentage points. This standardization target and plug-in summary differ from full-sample margins and posterior-median summaries elsewhere. These are illustrative point scenarios, without uncertainty bands.
+The unchanged primary frequentist model gives OR 1.543297 (95% CI 1.162706–2.048467), p = 0.003125. Standardizing to the survey-weighted circumcised complete-case covariate distribution (n = 6,463) gives intact-reference probability 4.448015%, circumcised probability 6.680342%, and gap 2.232327 percentage points. Both figures use these same fitted coefficients and targets. They show point scenarios, without scenario confidence intervals.
 
 ## 1. Circumcision timing
 
@@ -35,10 +35,10 @@ This is a marginal binary-mixture illustration with common outcome probabilities
 From the repository root, using the installed requirements:
 
 ```sh
-python scripts/reproduce.py --nhanes-only
+python scripts/reproduce.py
 python -m analyses.figures.reproduce
 ```
 
-The second command reuses the fitted model; it does not refit a new outcome model. It checks the input-data hash, reconstructs mixtures and verifies feasible probabilities. Generated images and numerical checks remain under `outputs/selected_figures/`. It does not overwrite the selected copies in this directory. The source data and posterior draws remain local.
+The second command reuses the fitted model; it does not refit a new outcome model. It checks the input-data hash, reconstructs mixtures and verifies feasible probabilities. Generated images and numerical checks remain under `outputs/selected_figures/`. It does not overwrite the selected copies in this directory. The source data and fitted participant-level standardization inputs remain local.
 
-For the manuscript's underlying association, use the [Bayesian/frequentist comparison](../README.md#headline-questions-side-by-side-results), [methods](../docs/methods.md), and [validation](../docs/validation.md) alongside these figures.
+For the manuscript's underlying association, use the [frequentist results](../docs/results.md), [methods](../docs/methods.md), and [validation](../docs/validation.md) alongside these figures.
