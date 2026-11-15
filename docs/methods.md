@@ -40,4 +40,4 @@ The registered analysis entry point exports the complete coefficient vector and 
 
 Both figures evaluate logistic probabilities using the fitted frequentist coefficient vector, averaging over the same survey-weighted covariate distribution of circumcised complete cases. This is different from raw weighted prevalence and from standardization over all complete cases. Timing curves retain covariate-varying timing fractions and common conditional component ORs. The confounding figure is a marginal binary-characteristic illustration. Both are point scenarios without confidence intervals; see the [figure guide](../figures/README.md) and [timing methods](../analyses/timing/methods.md).
 
-The optional Maloney supplement remains reproducible with `python scripts/reproduce.py --with-maloney`. Its ultimate manuscript inclusion is an editorial decision; it is omitted from the default NHANES workflow, not silently deleted.
+The optional Maloney supplement remains reproducible with `python scripts/reproduce.py --with-maloney`. It is excluded from the NHANES manuscript and supplement by editorial decision and remains available as a separate research artifact.

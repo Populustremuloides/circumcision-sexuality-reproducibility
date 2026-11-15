@@ -32,7 +32,7 @@ def main():
         d=pd.read_csv(ROOT/'outputs/frequentist'/path)
         cols=[c for c in d.columns if c in keep or c.startswith('p_holm')]
         extra += [f'## {title}',f'[Implementation](../src/frequentist/{code}); exact local record: `outputs/frequentist/{path}`.',table(d[cols])]
-    extra += ['## Optional Maloney supplement','The separate unweighted Maloney analysis is retained pending an editorial inclusion decision. Run `python scripts/reproduce.py --with-maloney`. Its primary eligible sample and manuscript-exclusion sensitivity are both validated against frozen pre-refactor records. Results are written to `outputs/frequentist/maloney/`; [implementation](../src/frequentist/maloney.py), [methods](methods.md#separate-maloney-supplement). It is not pooled with NHANES.']
+    extra += ['## Optional Maloney supplement','The separate unweighted Maloney analysis is retained as a separate research artifact outside the NHANES manuscript. Run `python scripts/reproduce.py --with-maloney`. Its primary eligible sample and manuscript-exclusion sensitivity are both validated against frozen pre-refactor records. Results are written to `outputs/frequentist/maloney/`; [implementation](../src/frequentist/maloney.py), [methods](methods.md#separate-maloney-supplement). It is not pooled with NHANES.']
     e=pd.read_csv(ROOT/'outputs/timing/endpoint_results.csv');minimum=json.loads((ROOT/'outputs/timing/endpoint_validation.json').read_text())['minimum_fraction']
     endpoint=e[['scenario','fraction','component_baseline','component_prevalence','prevalence_ratio','component_OR']].copy()
     for c in ['fraction','component_baseline','component_prevalence']:endpoint[c]*=100

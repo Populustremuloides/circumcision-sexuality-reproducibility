@@ -169,4 +169,4 @@ Generated from local frequentist output tables. Unavailable estimates and failed
 
 ## Optional Maloney supplement
 
-The separate unweighted Maloney analysis is retained pending an editorial inclusion decision. Run `python scripts/reproduce.py --with-maloney`. Its primary eligible sample and manuscript-exclusion sensitivity are both validated against frozen pre-refactor records. Results are written to `outputs/frequentist/maloney/`; [implementation](../src/frequentist/maloney.py), [methods](methods.md#separate-maloney-supplement). It is not pooled with NHANES.
+The separate unweighted Maloney analysis is retained as a separate research artifact outside the NHANES manuscript. Run `python scripts/reproduce.py --with-maloney`. Its primary eligible sample and manuscript-exclusion sensitivity are both validated against frozen pre-refactor records. Results are written to `outputs/frequentist/maloney/`; [implementation](../src/frequentist/maloney.py), [methods](methods.md#separate-maloney-supplement). It is not pooled with NHANES.
