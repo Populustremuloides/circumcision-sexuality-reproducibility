@@ -1,0 +1,74 @@
+[
+  {
+    "year": 1999,
+    "file": "DEMO.htm",
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/1999/DataFiles/DEMO.htm",
+    "sha256": "3757ef13473397ba968273ee4e7d449c3e2dfa0adb45a0faabddd438ff3e23f9"
+  },
+  {
+    "year": 1999,
+    "file": "DEMO.xpt",
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/1999/DataFiles/DEMO.xpt",
+    "sha256": "a17bd1ebfd6007b8dc93f16259cb090678eb6c467a39363b7e932bba15febf89"
+  },
+  {
+    "year": 1999,
+    "file": "SXQ.htm",
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/1999/DataFiles/SXQ.htm",
+    "sha256": "8165d5197896295ee912dd5816f598e12a394fd0efc7ae5c78e268143182c950"
+  },
+  {
+    "year": 1999,
+    "file": "SXQ.xpt",
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/1999/DataFiles/SXQ.xpt",
+    "sha256": "b13deab86d44aae2f8dfe5caa438d9b2d7f7b8c9f970f8b614dec25dfd82d5b0"
+  },
+  {
+    "year": 2001,
+    "file": "DEMO_B.htm",
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2001/DataFiles/DEMO_B.htm",
+    "sha256": "a2e47fd9692f9e62a4823f746bbdb60b67a67b60946ded4f7f30102ebcf20825"
+  },
+  {
+    "year": 2001,
+    "file": "DEMO_B.xpt",
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2001/DataFiles/DEMO_B.xpt",
+    "sha256": "6458dc2307cee244ab6ba26f70ec78c7b842ffc68e668bc43f0ab6b9737937d9"
+  },
+  {
+    "year": 2001,
+    "file": "SXQ_B.htm",
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2001/DataFiles/SXQ_B.htm",
+    "sha256": "282591eabb691c22fd974de9fb8792a8bff9dd693cfb81a4080a00bae73068d8"
+  },
+  {
+    "year": 2001,
+    "file": "SXQ_B.xpt",
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2001/DataFiles/SXQ_B.xpt",
+    "sha256": "02a911ce4c98d5ffdc272384ab5c63127a965299128f49528e6a9d5598792cc0"
+  },
+  {
+    "year": 2003,
+    "file": "DEMO_C.htm",
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2003/DataFiles/DEMO_C.htm",
+    "sha256": "d4193186dc2c10290c9b191acd4871a92c56250b8087b4becb50736383c417c3"
+  },
+  {
+    "year": 2003,
+    "file": "DEMO_C.xpt",
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2003/DataFiles/DEMO_C.xpt",
+    "sha256": "2a2fdb88263337bfa06f0516bfb419631595f0a0ee88fb96069bed13d1857c6f"
+  },
+  {
+    "year": 2003,
+    "file": "SXQ_C.htm",
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2003/DataFiles/SXQ_C.htm",
+    "sha256": "16f2eacbf968a83b3ddc02e91070536b38cefb2bc8944d9a7c6272aee7e3cc6d"
+  },
+  {
+    "year": 2003,
+    "file": "SXQ_C.xpt",
+    "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2003/DataFiles/SXQ_C.xpt",
+    "sha256": "83c20e555f2fa7f39eaeb1bea3a7ed4a68e4d70c1e78ec8469a5b38893ad2826"
+  }
+]
