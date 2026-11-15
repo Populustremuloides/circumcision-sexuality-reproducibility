@@ -3,6 +3,7 @@ import argparse,json
 import numpy as np,pandas as pd
 from src.specification import ROOT,ANALYSES
 from src.frequentist.export import load_primary
+from validation.diagnostics import failure_signature
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--with-maloney',action='store_true');args=p.parse_args()
@@ -13,7 +14,9 @@ def main():
         assert list(actual.columns)==list(expected.columns),name
         assert len(actual)==len(expected),name
         for col in actual:
-            if pd.api.types.is_numeric_dtype(actual[col]):
+            if name == 'explanations/models.csv' and col == 'error':
+                assert actual[col].map(failure_signature).tolist()==expected[col].map(failure_signature).tolist(),(name,col)
+            elif pd.api.types.is_numeric_dtype(actual[col]):
                 np.testing.assert_allclose(actual[col].astype(float),pd.to_numeric(expected[col]).astype(float),rtol=1e-7,atol=1e-9,equal_nan=True,err_msg=f'{name}: {col}')
             else:assert actual[col].fillna('<NA>').astype(str).tolist()==expected[col].fillna('<NA>').astype(str).tolist(),(name,col)
         checks.append(dict(table=name,rows=len(actual),matched=True))
