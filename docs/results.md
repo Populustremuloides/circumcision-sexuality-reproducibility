@@ -69,26 +69,41 @@ See [extension results](extension_results.md) for the retained sensitivity famil
 
 ## Pooled model sensitivities
 
-| outcome | model | n | events | n_circ | n_uncirc | events_circ | events_uncirc | beta | se | odds_ratio | ci_low | ci_high | p_value | design_df | residual_df | parameters | max_abs_score | kish_n | formula |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| msm_ever | full | 12973 | 662 | 9167 | 3806 | 527 | 135 | 0.3868 | 0.123961 | 1.47226 | 1.1518 | 1.88189 | 0.00227122 | 138 | 118 | 21 | 3.6805e-12 | 8620.47 | msm_ever ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born |
-| msm_ever | exclude_1999_2000 | 11842 | 611 | 8405 | 3437 | 490 | 121 | 0.43915 | 0.133156 | 1.55139 | 1.1914 | 2.02016 | 0.00132971 | 124 | 105 | 20 | 6.3417e-12 | 7810.01 | msm_ever ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born |
-| msm_ever | original_2005_2016 | 9161 | 498 | 6463 | 2698 | 401 | 97 | 0.433921 | 0.142207 | 1.5433 | 1.16271 | 2.04847 | 0.00312505 | 94 | 77 | 18 | 3.8719e-12 | 5828.46 | msm_ever ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born |
-| msm_ever | direct_2009_2016 | 6261 | 336 | 4335 | 1926 | 266 | 70 | 0.35722 | 0.166584 | 1.42935 | 1.02253 | 1.99803 | 0.0370937 | 63 | 48 | 16 | 5.67268e-12 | 3794.63 | msm_ever ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born |
-| msm_ever | exclude_ambiguous_screen_zeros | 12609 | 662 | 8986 | 3623 | 527 | 135 | 0.381385 | 0.124272 | 1.46431 | 1.14487 | 1.87288 | 0.00266546 | 138 | 118 | 21 | 1.15435e-12 | 8407.61 | msm_ever ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born |
-| msm_ever | exclude_all_earlier_screen_zeros | 12407 | 662 | 8856 | 3551 | 527 | 135 | 0.383013 | 0.124538 | 1.4667 | 1.14613 | 1.87692 | 0.00261219 | 138 | 118 | 21 | 3.63964e-12 | 8265.42 | msm_ever ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born |
+| model | n | events | odds_ratio | ci_low | ci_high | p_value |
+|---|---|---|---|---|---|---|
+| full | 12973 | 662 | 1.47226 | 1.1518 | 1.88189 | 0.00227122 |
+| exclude_1999_2000 | 11842 | 611 | 1.55139 | 1.1914 | 2.02016 | 0.00132971 |
+| original_2005_2016 | 9161 | 498 | 1.5433 | 1.16271 | 2.04847 | 0.00312505 |
+| direct_2009_2016 | 6261 | 336 | 1.42935 | 1.02253 | 1.99803 | 0.0370937 |
+| exclude_ambiguous_screen_zeros | 12609 | 662 | 1.46431 | 1.14487 | 1.87288 | 0.00266546 |
+| exclude_all_earlier_screen_zeros | 12407 | 662 | 1.4667 | 1.14613 | 1.87692 | 0.00261219 |
 
 ## Pooled adjustment sequence
 
-| outcome | model | n | events | n_circ | n_uncirc | events_circ | events_uncirc | beta | se | odds_ratio | ci_low | ci_high | p_value | design_df | residual_df | parameters | max_abs_score | kish_n | formula | sample |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| msm_ever | unadjusted | 12985 | 663 | 9173 | 3812 | 527 | 136 | 0.567219 | 0.120221 | 1.76336 | 1.39026 | 2.23658 | 5.80056e-06 | 138 | 137 | 2 | 5.38411e-12 | 8629.08 | msm_ever ~ circ | available |
-| msm_ever | unadjusted | 12973 | 662 | 9167 | 3806 | 527 | 135 | 0.577221 | 0.120717 | 1.78108 | 1.40286 | 2.26128 | 4.43102e-06 | 138 | 137 | 2 | 4.40675e-13 | 8620.47 | msm_ever ~ circ | common_complete |
-| msm_ever | age_cycle | 12985 | 663 | 9173 | 3812 | 527 | 136 | 0.571261 | 0.11932 | 1.7705 | 1.39815 | 2.24201 | 4.6151e-06 | 138 | 127 | 12 | 1.56325e-12 | 8629.08 | msm_ever ~ circ + age10 + I(age10**2) + C(cycle) | available |
-| msm_ever | age_cycle | 12973 | 662 | 9167 | 3806 | 527 | 135 | 0.580936 | 0.119829 | 1.78771 | 1.41032 | 2.26609 | 3.57333e-06 | 138 | 127 | 12 | 1.60938e-12 | 8620.47 | msm_ever ~ circ + age10 + I(age10**2) + C(cycle) | common_complete |
-| msm_ever | demographic | 12978 | 663 | 9168 | 3810 | 527 | 136 | 0.447629 | 0.127778 | 1.5646 | 1.21484 | 2.01505 | 0.000648541 | 138 | 119 | 20 | 4.28702e-12 | 8623.77 | msm_ever ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) | available |
-| msm_ever | demographic | 12973 | 662 | 9167 | 3806 | 527 | 135 | 0.459771 | 0.128514 | 1.58371 | 1.22789 | 2.04264 | 0.000502612 | 138 | 119 | 20 | 2.04298e-12 | 8620.47 | msm_ever ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) | common_complete |
-| msm_ever | full | 12973 | 662 | 9167 | 3806 | 527 | 135 | 0.3868 | 0.123961 | 1.47226 | 1.1518 | 1.88189 | 0.00227122 | 138 | 118 | 21 | 3.6805e-12 | 8620.47 | msm_ever ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born | available |
-| msm_ever | full | 12973 | 662 | 9167 | 3806 | 527 | 135 | 0.3868 | 0.123961 | 1.47226 | 1.1518 | 1.88189 | 0.00227122 | 138 | 118 | 21 | 3.6805e-12 | 8620.47 | msm_ever ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born | common_complete |
+| model | sample | n | odds_ratio | ci_low | ci_high | p_value |
+|---|---|---|---|---|---|---|
+| unadjusted | available | 12985 | 1.76336 | 1.39026 | 2.23658 | 5.80056e-06 |
+| unadjusted | common_complete | 12973 | 1.78108 | 1.40286 | 2.26128 | 4.43102e-06 |
+| age_cycle | available | 12985 | 1.7705 | 1.39815 | 2.24201 | 4.6151e-06 |
+| age_cycle | common_complete | 12973 | 1.78771 | 1.41032 | 2.26609 | 3.57333e-06 |
+| demographic | available | 12978 | 1.5646 | 1.21484 | 2.01505 | 0.000648541 |
+| demographic | common_complete | 12973 | 1.58371 | 1.22789 | 2.04264 | 0.000502612 |
+| full | available | 12973 | 1.47226 | 1.1518 | 1.88189 | 0.00227122 |
+| full | common_complete | 12973 | 1.47226 | 1.1518 | 1.88189 | 0.00227122 |
 
 [Questionnaire skip audit](pooled_analysis.md)
+
+## Exploratory temporal interaction tests
+
+| period | test | n | events | beta | se | ratio_OR_per_decade | low | high | statistic | df1 | df2 | p |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| direct_2009_2016 | linear_trend | 6261 | 336 | 0.936101 | 0.662522 | 2.55002 | 0.672522 | 9.66898 | 1.41294 | 1 | 47 | 0.164263 |
+| direct_2009_2016 | categorical_heterogeneity | 6261 | 336 | unavailable | unavailable | unavailable | unavailable | unavailable | 1.49923 | 3 | 45 | 0.227614 |
+| harmonized_2001_2016 | linear_trend | 11842 | 611 | 0.161693 | 0.257848 | 1.1755 | 0.704949 | 1.96014 | 0.627085 | 1 | 104 | 0.531978 |
+| harmonized_2001_2016 | categorical_heterogeneity | 11842 | 611 | unavailable | unavailable | unavailable | unavailable | unavailable | 0.660214 | 7 | 98 | 0.705044 |
+| harmonized_1999_2016 | linear_trend | 12973 | 662 | 0.246178 | 0.21906 | 1.27913 | 0.828898 | 1.97391 | 1.12379 | 1 | 117 | 0.263401 |
+| harmonized_1999_2016 | categorical_heterogeneity | 12973 | 662 | unavailable | unavailable | unavailable | unavailable | unavailable | 0.717509 | 8 | 110 | 0.675643 |
+| partner_history_2001_2008 | linear_trend | 5581 | 275 | -0.243772 | 0.819459 | 0.783666 | 0.150432 | 4.08247 | -0.297479 | 1 | 45 | 0.76747 |
+| partner_history_2001_2008 | categorical_heterogeneity | 5581 | 275 | unavailable | unavailable | unavailable | unavailable | unavailable | 0.034655 | 3 | 43 | 0.991226 |
+
+[Plan](../analyses/nhanes/time_trend_plan.md) · [Code](../analyses/nhanes/time_trend.py). Direct-question 2009–2016 is the main comparability test. Longer windows mix question regimes. No clear trend was established; these are nominal exploratory tests, not evidence of temporal equivalence.

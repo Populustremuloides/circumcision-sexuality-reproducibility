@@ -30,7 +30,7 @@ def main():
         for k in ['n','events','beta','se','odds_ratio','ci_low','ci_high','p_value','residual_df']:np.testing.assert_allclose(r[k],source.iloc[0][k],rtol=1e-9,atol=1e-10)
         assert r['formula']==spec['formula']
     cache,meta=load_primary();assert meta['n']==12973 and meta['events']==662
-    result=dict(passed=True,reference_commit=reference['baseline_commit'],rtol=1e-7,atol=1e-9,checks=checks,export_matches_original=True,standardization_verified=True)
+    result=dict(passed=True,reference_commit=reference['baseline_commit'],rtol=1e-7,atol=1e-9,checks=checks,export_matches_declared_period=True,standardization_verified=True)
     out=ROOT/'outputs/validation';out.mkdir(exist_ok=True,parents=True);(out/'release.json').write_text(json.dumps(result,indent=2)+'\n')
     print('Frequentist reference, export and standardization checks passed.')
 if __name__=='__main__':main()
