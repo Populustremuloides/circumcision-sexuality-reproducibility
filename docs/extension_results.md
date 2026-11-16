@@ -1,4 +1,4 @@
-# Retained sensitivity and extension results
+# Retained 2005–2016 sensitivity and extension results
 
 Generated from local frequentist output tables. Unavailable estimates and failed fits remain visible. Interaction ORs are ratios of subgroup ORs. Explanatory contrasts retain their named scale, including differences; they must not all be read as odds ratios. Holm corrections cover only their original named families, not the entire exploratory search.
 

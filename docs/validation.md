@@ -13,3 +13,5 @@ The figure runner verifies artifact/input/code hashes, standardization targets a
 Run `python scripts/reproduce.py`, `python -m analyses.figures.reproduce`, and `python -m scripts.build_results --check`. Local validation records are under `outputs/frequentist/`, `outputs/validation/`, `outputs/timing/` and `outputs/selected_figures/`. Add `--with-maloney` to include and verify the separate supplement.
 
 These checks support computational correctness under the implemented model. They do not rule out confounding, reporting bias, selection, or a failure of the population association to replicate. No independent human statistical review is claimed.
+
+The pooled primary fit and five period/screening sensitivity fits are independently checked by `Rscript analyses/nhanes/verify_pooled.R`. Historical six-cycle frozen-reference checks remain unchanged; the pooled primary export is compared against its newly generated pooled model record. Table 1 and figure inputs use the pooled artifact.

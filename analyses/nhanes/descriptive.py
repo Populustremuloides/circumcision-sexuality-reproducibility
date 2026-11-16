@@ -5,7 +5,7 @@ from src.specification import ROOT
 from src.frequentist.export import load_primary
 
 def main():
- cache,meta=load_primary();d=pd.read_csv(ROOT/'data/analysis.csv.gz');z=d.set_index('SEQN').loc[cache['analytic_seqn']];out=ROOT/'outputs/descriptive';out.mkdir(parents=True,exist_ok=True);rows=[]
+ cache,meta=load_primary();d=pd.read_csv(ROOT/meta['input_file']);z=d.set_index('SEQN').loc[cache['analytic_seqn']];out=ROOT/'outputs/descriptive';out.mkdir(parents=True,exist_ok=True);rows=[]
  categories={'race':{1:'Mexican American',2:'Other Hispanic',3:'Non-Hispanic White',4:'Non-Hispanic Black',5:'Other race, including multiracial'},'education':{1:'Less than ninth grade',2:'Ninth–eleventh grade, no diploma',3:'High school graduate or GED',4:'Some college or associate degree',5:'College graduate or above'},'foreign_born':{0:'Born in 50 U.S. states or DC',1:'Born outside 50 U.S. states/DC'},'cycle':{x:x for x in sorted(z.cycle.unique())}}
  for group,g in [('Total',z),('Intact',z[z.circ.eq(0)]),('Circumcised',z[z.circ.eq(1)])]:
   w=g.weight/g.weight.sum();mean=float(w@g.RIDAGEYR);sd=float(np.sqrt(w@((g.RIDAGEYR-mean)**2)));rows.extend([dict(group=group,variable='N',category='Unweighted sample size',n=len(g),value=len(g),statistic='count'),dict(group=group,variable='age',category='Age, years (mean, SD)',n=len(g),value=mean,sd=sd,statistic='weighted_mean_sd')])
@@ -15,7 +15,7 @@ def main():
     mask=g[variable].eq(code);value=float(100*(w@mask));total+=value;rows.append(dict(group=group,variable=variable,category=label,n=int(mask.sum()),value=value,statistic='weighted_percent'))
    np.testing.assert_allclose(total,100,atol=1e-10)
  table=pd.DataFrame(rows);table.to_csv(out/'table1.csv',index=False)
- lines=[r'\begin{table}[htbp]',r'\centering\small',r'\caption{Characteristics of the primary NHANES 2005--2016 analytic sample by circumcision status.}',r'\label{tab:demographics}',r'\begin{tabular}{lrrr}\toprule',r'Characteristic & Total & Intact & Circumcised \\\midrule']
+ lines=[r'\begin{table}[htbp]',r'\centering\small',r'\caption{Characteristics of the primary NHANES 1999--2016 analytic sample by circumcision status.}',r'\label{tab:demographics}',r'\begin{tabular}{lrrr}\toprule',r'Characteristic & Total & Intact & Circumcised \\\midrule']
  for variable in ['N','age','race','education','foreign_born','cycle']:
   if variable not in ['N','age']:lines.append(r'\multicolumn{4}{l}{\textit{'+{'race':'Race/ethnicity','education':'Educational attainment','foreign_born':'Nativity','cycle':'Survey cycle'}[variable]+r'}}\\')
   for label in table.loc[table.variable.eq(variable),'category'].drop_duplicates():

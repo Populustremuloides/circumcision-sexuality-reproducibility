@@ -6,7 +6,7 @@ from src.survey.design import Survey
 from src.frequentist.export import write_fit
 
 def frequentist(aid):
-    spec=ANALYSES[aid];d=pd.read_csv(ROOT/'data/analysis.csv.gz');s=Survey(d)
+    spec=ANALYSES[aid];d=pd.read_csv(ROOT/spec['data']);s=Survey(d)
     row,mask,details=s.model(spec['outcome'],spec['formula'].split(' ~ ',1)[1],d.eligible,'full',return_fit=True)
     return write_fit(aid,d,row,details)
 

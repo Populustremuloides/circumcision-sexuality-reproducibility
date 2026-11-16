@@ -8,7 +8,7 @@ The fractions in the endpoint tables are assumptions. The source audit did not e
 
 ## Population, outcome and baseline
 
-The principal outcome is reported lifetime male–male sexual behavior among the original eligible NHANES 2005–2016 male participants aged 20–59. The primary all-men model has 9,161 complete cases and 498 events. The common adjustment set includes linear and quadratic age, survey cycle, race/ethnicity, education and nativity. Survey weights, strata and PSUs remain those of the main analysis.
+The principal outcome is reported lifetime male–male sexual behavior among the eligible NHANES 1999–2016 male participants aged 20–59. The primary all-men model has 12,973 complete cases and 662 events. The common adjustment set includes linear and quadratic age, survey cycle, race/ethnicity, education and nativity. Survey weights, strata and PSUs remain those of the main analysis.
 
 For timing calculations, standardization uses the empirical covariate distribution of currently circumcised complete cases. All infant and adult shares therefore have **circumcised men** as their denominator. This differs from the full-sample target distribution used in some earlier prevalence summaries. Weighted complete-case totals describe the represented domain, not a new nonresponse-adjusted population estimate.
 

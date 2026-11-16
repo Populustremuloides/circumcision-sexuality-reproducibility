@@ -1,6 +1,6 @@
-# Earlier-period temporal replication
+# Historical earlier-period analysis
 
-The fixed specification was committed as af1e2a0 before estimating associations. This is a separate period within NHANES, not a pooled analysis or an independent survey system.
+The fixed specification was committed as af1e2a0 before estimating associations. This historical subset now overlaps the pooled 1999–2016 primary analysis and is not independent confirmation.
 
 | model | n | events | odds_ratio | ci_low | ci_high | p_value |
 |---|---|---|---|---|---|---|

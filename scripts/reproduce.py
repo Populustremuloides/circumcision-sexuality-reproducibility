@@ -11,13 +11,18 @@ def main():
     p.add_argument('--r-check',action='store_true',help='Also compare eight models with R survey.')
     a=p.parse_args()
     if a.r_check and not shutil.which('Rscript'):p.error('Rscript and the survey package are required for --r-check.')
+    if a.offline:
+        for item in json.loads((ROOT/'analyses/replication/sources.json').read_text()):
+            if not (ROOT/'data/replication'/item['file']).exists():p.error('Offline mode requires cached earlier-cycle sources.')
     out=ROOT/'outputs';logs=out/'logs';logs.mkdir(parents=True,exist_ok=True)
     env=dict(os.environ,OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1',VECLIB_MAXIMUM_THREADS='1',MKL_NUM_THREADS='1',MPLBACKEND='Agg',MPLCONFIGDIR=str(out/'.matplotlib'))
-    modules=[('src.data.download',(['--offline'] if a.offline else [])+(['--with-maloney'] if a.with_maloney else [])),('src.frequentist.nhanes',[]),('src.frequentist.behavior',[]),('src.frequentist.identity',[]),('src.frequentist.explanations',[]),('validation.frequentist.explanations',[]),('validation.frequentist.core',[]),('analyses.nhanes.run',[]),('analyses.nhanes.descriptive',[]),('unittest',['validation.test_diagnostics'])]
+    modules=[('src.data.download',(['--offline'] if a.offline else [])+(['--with-maloney'] if a.with_maloney else [])),('src.frequentist.nhanes',[]),('src.frequentist.behavior',[]),('src.frequentist.identity',[]),('src.frequentist.explanations',[]),('validation.frequentist.explanations',[]),('validation.frequentist.core',[]),('analyses.replication.run',[]),('analyses.nhanes.pooled',[]),('analyses.nhanes.time_trend',[]),('analyses.nhanes.run',[]),('analyses.nhanes.descriptive',[]),('unittest',['validation.test_diagnostics'])]
     if a.with_replication:modules.append(('analyses.replication.run',['--estimate']))
     if a.with_maloney:modules.append(('analyses.maloney.run',[]))
     modules += [('validation.release',['--with-maloney'] if a.with_maloney else []),('analyses.timing.reproduce',[]),('analyses.figures.reproduce',[]),('scripts.build_results',[]),('validation.repository',[])]
     stages=[(m,[sys.executable,'-m',m]+args) for m,args in modules]
+    if a.r_check:stages.append(('R_time_trend',['Rscript','analyses/nhanes/verify_time_trend.R']))
+    if a.r_check:stages.append(('R_pooled',['Rscript','analyses/nhanes/verify_pooled.R']))
     if a.r_check:stages.insert(-1,('R_survey',['Rscript','validation/r_survey/reproduce.R']))
     if a.r_check and a.with_replication:stages.append(('R_replication',['Rscript','analyses/replication/verify.R']))
     status=dict(status='running',started_utc=datetime.now(timezone.utc).isoformat(),arguments=vars(a),stages=[])

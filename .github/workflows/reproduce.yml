@@ -24,4 +24,6 @@ jobs:
       - run: Rscript -e 'install.packages("survey", repos="https://cloud.r-project.org")'
       - run: Rscript validation/r_survey/reproduce.R
       - run: Rscript analyses/replication/verify.R
+      - run: Rscript analyses/nhanes/verify_pooled.R
+      - run: Rscript analyses/nhanes/verify_time_trend.R
       # Data and generated artifacts stay on the temporary runner.

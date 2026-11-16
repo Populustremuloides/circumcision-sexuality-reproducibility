@@ -1,3 +1,5 @@
+> Historical refactor report: the values below describe the earlier 2005–2016 analysis. For the current pooled result, see [results](results.md).
+
 # Frequentist-only refactor verification — 14 November 2026
 
 ## Repository changes

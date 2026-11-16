@@ -11,7 +11,7 @@ import numpy as np
 from scipy.special import expit
 from src.specification import ROOT,ANALYSES
 PRIMARY='nhanes.msm_ever.adjusted'
-CODE=['src/survey/design.py','src/frequentist/export.py','analyses/nhanes/run.py','src/data/nhanes.py','src/specification.py']
+CODE=['src/survey/design.py','src/frequentist/export.py','analyses/nhanes/run.py','src/data/nhanes.py','src/specification.py','analyses/nhanes/pooled.py']
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def write_fit(aid,data,row,details):
     out=ROOT/'outputs/frequentist/headline';out.mkdir(parents=True,exist_ok=True)
@@ -23,7 +23,7 @@ def write_fit(aid,data,row,details):
     np.savez_compressed(path,coefficients=beta,covariance=details['covariance'],columns=details['columns'],
         analytic_seqn=z.SEQN.to_numpy(),target_seqn=z.loc[keep,'SEQN'].to_numpy(),X0=X0,target_weights=weights,circ_index=j)
     meta=dict(row,analysis_id=aid,method='survey_logistic_t',sample=ANALYSES[aid]['sample'],
-        input_sha256=sha(ROOT/'data/analysis.csv.gz'),spec_sha256=sha(ROOT/'config/analyses.json'),
+        input_file=ANALYSES[aid]['data'], period=ANALYSES[aid]['period'], input_sha256=sha(ROOT/ANALYSES[aid]['data']),spec_sha256=sha(ROOT/'config/analyses.json'),
         code_hashes={f:sha(ROOT/f) for f in CODE},commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         artifact_sha256=sha(path),columns=details['columns'],coefficients=beta.tolist(),
         analytic_ids_sha256=hashlib.sha256(z.SEQN.to_numpy().tobytes()).hexdigest(),
@@ -34,7 +34,7 @@ def write_fit(aid,data,row,details):
 def load_primary():
     path=ROOT/'outputs/frequentist/headline'/f'{PRIMARY}.npz'
     meta=json.loads(path.with_suffix('.json').read_text())
-    assert meta['input_sha256']==sha(ROOT/'data/analysis.csv.gz'),'Stale data: rerun reproduction.'
+    assert meta['input_sha256']==sha(ROOT/meta['input_file']),'Stale data: rerun reproduction.'
     assert meta['spec_sha256']==sha(ROOT/'config/analyses.json'),'Stale specification.'
     assert meta['artifact_sha256']==sha(path),'Fitted artifact changed.'
     for f,h in meta['code_hashes'].items():assert sha(ROOT/f)==h,f'Stale fit code: {f}'

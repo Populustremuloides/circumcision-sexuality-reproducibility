@@ -1,3 +1,5 @@
+> Historical specification, preserved verbatim below. Superseded for the final primary behavior analysis on 16 November 2026 by pooled 1999–2016; this earlier subset is no longer independent of the primary sample.
+
 # Fixed temporal replication specification
 
 Frozen before calculating exposure–outcome cross-tabulations or regression associations, 15 November 2026. This is a retrospectively chosen independent-period test within NHANES, not a prospective registration or an independent survey system. The 2005–2016 analysis remains primary and the periods will not be pooled.

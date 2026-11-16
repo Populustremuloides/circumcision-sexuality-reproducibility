@@ -14,10 +14,10 @@ def main():
     assert len(ids)==14 and spec['newborn']['source_id'] in ids and spec['procedures']['source_id'] in ids
     assert spec['assumptions']['shares_are_estimated'] is False
     counts=spec['procedures']['counts'];assert stock(2016,18,counts)==43*counts['15to44']+16*counts['45to64']
-    d=pd.read_csv(ROOT/'data/analysis.csv.gz');z=d.set_index('SEQN').loc[cache['analytic_seqn']].copy();z['birth_early']=z.year-z.RIDAGEYR-1;z['birth_late']=z.year+1-z.RIDAGEYR
+    d=pd.read_csv(ROOT/meta['input_file']);z=d.set_index('SEQN').loc[cache['analytic_seqn']].copy();z['birth_early']=z.year-z.RIDAGEYR-1;z['birth_late']=z.year+1-z.RIDAGEYR
     rows=[]
     for cy,sub in z.groupby('year'):
-        Nc=6*sub.loc[sub.circ.eq(1),'weight'].sum();Nf=6*sub.loc[sub.circ.eq(1)&sub.foreign_born.eq(1),'weight'].sum()
+        Nc=sub.loc[sub.circ.eq(1),'population_weight'].sum();Nf=sub.loc[sub.circ.eq(1)&sub.foreign_born.eq(1),'population_weight'].sum()
         for threshold in [18,15,10]:
             for missing in spec['assumptions']['setting_multipliers']:
                 for history in spec['assumptions']['historical_multipliers']:

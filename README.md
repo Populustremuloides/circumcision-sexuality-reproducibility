@@ -6,26 +6,28 @@ Is circumcision status associated with reported lifetime male–male sexual beha
 
 ## Dataset and eligible population
 
-NHANES 2005–2016, six two-year cycles; respondents recorded as male, ages 20–59, with positive examination weights. Each model uses its required complete cases. Public source files are downloaded and checksum-verified.
+Primary behavior analysis: NHANES 1999–2016, nine two-year cycles; respondents recorded as male, ages 20–59, with positive examination weights. Each model uses its required complete cases. Public source files are downloaded and checksum-verified.
 
 ## Outcome, exposure and covariates
 
-The primary outcome is reported lifetime male–male sexual behavior, harmonized across questionnaire changes. Exposure is self-reported circumcision, with intact men as reference. Adjustment includes linear and quadratic age, survey cycle, race/ethnicity, education and nativity. Survey-weighted logistic regression uses Taylor-linearized standard errors and finite design degrees of freedom, preserving examination weights, strata, PSUs and domain estimation. [Methods](docs/methods.md) · [Executable specifications](config/analyses.json).
+The final primary outcome (selected during exploratory development, not prospectively) is reported lifetime male–male sexual behavior, harmonized across questionnaire changes. Exposure is self-reported circumcision, with intact men as reference. Adjustment includes linear and quadratic age, survey cycle, race/ethnicity, education and nativity. Survey-weighted logistic regression uses Taylor-linearized standard errors and finite design degrees of freedom, preserving examination weights, strata, PSUs and domain estimation. [Methods](docs/methods.md) · [Executable specifications](config/analyses.json).
 
 ## Primary frequentist estimate
 
 | Question | N | Events | Adjusted OR (95% CI) | p |
 |---|---|---|---|---|
-| Lifetime male–male behavior | 9161 | 498 | 1.54 (1.16–2.05) | 0.0031 |
-| Gay/bisexual versus heterosexual identity | 8962 | 333 | 1.25 (0.85–1.84) | 0.2471 |
-| Gay versus heterosexual identity | 8825 | 196 | 1.52 (0.95–2.42) | 0.0803 |
-| Bisexual versus heterosexual identity | 8766 | 137 | 0.94 (0.49–1.79) | 0.8453 |
+| Lifetime male–male behavior (1999–2016) | 12973 | 662 | 1.47 (1.15–1.88) | 0.0023 |
+| Gay/bisexual versus heterosexual identity (2005–2016) | 8962 | 333 | 1.25 (0.85–1.84) | 0.2471 |
+| Gay versus heterosexual identity (2005–2016) | 8825 | 196 | 1.52 (0.95–2.42) | 0.0803 |
+| Bisexual versus heterosexual identity (2005–2016) | 8766 | 137 | 0.94 (0.49–1.79) | 0.8453 |
 
 Intervals are 95% confidence intervals; primary p-values are nominal and two-sided. Identity is distinct from behavior. [Result-to-code guide](docs/results.md).
 
 ## Sensitivity analyses
 
-Retained analyses cover alternate populations and periods, income and age specifications, specific sexual practices, identity-defined subgroups and explanatory contrasts. Their original multiplicity corrections and failed-model records are preserved. [Results and code](docs/extension_results.md).
+The pooled analysis includes exclusions of 1999–2000, the original 2005–2016 window, direct questions in 2009–2016, and two earlier-screening-zero sensitivity checks. [Pooled methods and skip audit](docs/pooled_analysis.md).
+
+Retained analyses cover alternate populations and periods, income and age specifications, specific sexual practices, identity-defined subgroups and explanatory contrasts. Identity and the retained practice/subgroup extensions remain explicitly limited to their original 2005–2016 or 2009–2016 windows. Their original multiplicity corrections and failed-model records are preserved. [Results and code](docs/extension_results.md).
 
 ## Figures and assumptions
 
@@ -42,7 +44,7 @@ python -m analyses.figures.reproduce
 python -m scripts.build_results --check
 ```
 
-The first reproduction command downloads 24 NHANES source files, runs the retained models and validation, exports fitted coefficients, generates timing scenarios and both figures, and rebuilds numerical documentation. The separate figure command is also available for rerendering without refitting. Generated figures are under `outputs/selected_figures/`; committed publication copies are under `figures/`. Data and full model artifacts remain local and ignored by Git. Initial downloading requires internet access.
+The first reproduction command downloads and verifies the current and earlier NHANES source files, runs the retained models and validation, exports fitted coefficients, generates timing scenarios and both figures, and rebuilds numerical documentation. The separate figure command is also available for rerendering without refitting. Generated figures are under `outputs/selected_figures/`; committed publication copies are under `figures/`. Data and full model artifacts remain local and ignored by Git. Initial downloading requires internet access.
 
 Use `python scripts/reproduce.py --offline` for verified cached inputs. The [optional Maloney supplement](docs/methods.md#separate-maloney-supplement) is preserved as a separate research artifact outside the NHANES manuscript; add `--with-maloney` to download its additional source, run it and validate it. It is not pooled with NHANES. Add `--r-check` for independent R `survey` comparisons; R is not required for routine reproduction.
 
@@ -52,11 +54,11 @@ To rerun a single registered model after harmonization:
 python -m analyses.nhanes.run --analysis nhanes.msm_ever.adjusted
 ```
 
-## Temporal replication and publication tables
+## Historical period comparisons and publication tables
 
 `python -m analyses.nhanes.descriptive` generates the demographic Table 1 and sequential exclusions from the exported primary sample. These are also generated by the default workflow.
 
-Add `--with-replication` to run the separately specified NHANES 1999–2004 temporal test; its [fixed specification](analyses/replication/specification.md) was committed before estimating associations. The periods are not pooled. [Replication results](docs/replication_results.md). Add `--r-check` to verify both periods in R.
+Add `--with-replication` to run the separately specified NHANES 1999–2004 temporal test; its [fixed specification](analyses/replication/specification.md) was committed before estimating associations. This is retained historical analysis, now overlapping the pooled primary sample; it is no longer independent confirmation. [Replication results](docs/replication_results.md). Add `--r-check` to verify both periods in R.
 
 ## Validation and limitations
 

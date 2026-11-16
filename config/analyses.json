@@ -8,35 +8,43 @@
   "analyses": [
     {
       "id": "nhanes.msm_ever.adjusted",
-      "question": "Lifetime male\u2013male behavior",
+      "question": "Lifetime male\u2013male behavior (1999\u20132016)",
       "outcome": "msm_ever",
       "formula": "msm_ever ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born",
       "sample": "eligible, outcome-specific complete cases",
-      "frequentist": "src/frequentist/nhanes.py"
+      "frequentist": "src/frequentist/nhanes.py",
+      "period": "1999\u20132016",
+      "data": "data/pooled.csv.gz"
     },
     {
       "id": "nhanes.identity_gb.adjusted",
-      "question": "Gay/bisexual versus heterosexual identity",
+      "question": "Gay/bisexual versus heterosexual identity (2005\u20132016)",
       "outcome": "identity_gb",
       "formula": "identity_gb ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born",
       "sample": "eligible, outcome-specific complete cases",
-      "frequentist": "src/frequentist/nhanes.py"
+      "frequentist": "src/frequentist/nhanes.py",
+      "period": "2005\u20132016",
+      "data": "data/analysis.csv.gz"
     },
     {
       "id": "nhanes.identity_gay.adjusted",
-      "question": "Gay versus heterosexual identity",
+      "question": "Gay versus heterosexual identity (2005\u20132016)",
       "outcome": "identity_gay",
       "formula": "identity_gay ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born",
       "sample": "eligible, outcome-specific complete cases",
-      "frequentist": "src/frequentist/nhanes.py"
+      "frequentist": "src/frequentist/nhanes.py",
+      "period": "2005\u20132016",
+      "data": "data/analysis.csv.gz"
     },
     {
       "id": "nhanes.identity_bi.adjusted",
-      "question": "Bisexual versus heterosexual identity",
+      "question": "Bisexual versus heterosexual identity (2005\u20132016)",
       "outcome": "identity_bi",
       "formula": "identity_bi ~ circ + age10 + I(age10**2) + C(cycle) + C(race) + C(education) + foreign_born",
       "sample": "eligible, outcome-specific complete cases",
-      "frequentist": "src/frequentist/nhanes.py"
+      "frequentist": "src/frequentist/nhanes.py",
+      "period": "2005\u20132016",
+      "data": "data/analysis.csv.gz"
     }
   ]
 }
