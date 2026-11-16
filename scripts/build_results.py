@@ -1,65 +1,50 @@
-"""Generate tracked Markdown summaries from locally reproduced, validated records.
-
---check fails on stale documentation. --ref COMMIT produces immutable code links.
-No datasets or machine-readable model outputs are added to Git.
-"""
+"""Generate numerical documentation from validated frequentist output records."""
+import argparse,json
 from pathlib import Path
-import argparse,json,ast,re
 import pandas as pd
-ROOT=Path(__file__).resolve().parents[1]
-from src.specification import ANALYSES
-BASE='https://github.com/Populustremuloides/circumcision-sexuality-reproducibility'
-def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--check',action='store_true');p.add_argument('--ref');a=p.parse_args()
- if a.ref is None:a.ref=json.loads((ROOT/'docs/code_reference.json').read_text())['ref']
- validation=json.loads((ROOT/'outputs/validation/release.json').read_text());assert validation['passed']
- def link(path,fn=None):
-  line=1
-  if fn and path.endswith('.json'):
-   line=next(i for i,v in enumerate((ROOT/path).read_text().splitlines(),1) if '"id": '+json.dumps(fn) in v)
-  elif fn:
-   nodes=ast.walk(ast.parse((ROOT/path).read_text()));line=next(n.lineno for n in nodes if isinstance(n,(ast.FunctionDef,ast.ClassDef)) and n.name==fn)
-  return f'{BASE}/blob/{a.ref}/{path}#L{line}'
- header='| Question | Frequentist OR (95% CI) | Bayesian OR (95% calibrated interval) | P(OR > 1) | Specification and code |\n|---|---:|---:|---:|---|'
- rows=[];details=['# Results and reproducible questions','Generated from validated local result records. The two methods use identical participants and formulas for each headline question.','']
- for aid,spec in ANALYSES.items():
-  f=json.loads((ROOT/f'outputs/frequentist/headline/{aid}.json').read_text());b=json.loads((ROOT/f'outputs/bayesian/headline/{aid}.json').read_text())
-  orf=f.get('odds_ratio',f.get('or'));assert orf is not None
-  links=f'[specification]({link("config/analyses.json",aid)}) · [frequentist]({link("analyses/nhanes/run.py","frequentist")}) · [Bayesian]({link("src/bayesian/headline.py","run")})'
-  rows.append(f'| {spec["question"]} | {orf:.2f} ({f["ci_low"]:.2f}–{f["ci_high"]:.2f}) | {b["OR"]:.2f} ({b["low"]:.2f}–{b["high"]:.2f}) | {100*b["p_positive"]:.1f}% | {links} |')
-  details += [f'## {spec["question"]}',f'Analysis ID: `{aid}`. N = {b["n"]:,}; events = {b["events"]:,}.',f'```sh\npython -m analyses.nhanes.run --analysis {aid}\n```',f'Formula: `{spec["formula"]}`.',f'{links}. The survey estimator is implemented in [Survey.model]({link("src/survey/design.py","model")}); the Bayesian likelihood and numerical integration are in [logistic.py]({link("src/bayesian/logistic.py","importance")}).',f'The command writes matching JSON result records to `outputs/frequentist/headline/{aid}.json` and `outputs/bayesian/headline/{aid}.json`. Records include the input/specification hashes, code hash, Git commit, sample size and uncertainty.','']
- table='\n'.join([header]+rows)
- details.insert(3,table)
- details += ['## Other questions', '| Question family | Frequentist implementation | Bayesian implementation | Scope |','|---|---|---|---|',
- '| Specific anal/oral behaviors | [behavior.py](../src/frequentist/behavior.py) | [approximation.py](../src/bayesian/approximation.py) | Gaussian/t approximation; not the directly fitted headline method |',
- '| Within-identity associations and interactions | [identity.py](../src/frequentist/identity.py) | [approximation.py](../src/bayesian/approximation.py) | Interaction conclusions remain sensitive to nuisance priors |',
- '| Explanatory contrasts | [explanations.py](../src/frequentist/explanations.py) | [approximation.py](../src/bayesian/approximation.py) | Some estimands are differences, not odds ratios; failed fits retained |',
- '| Maloney regret and self-concept | [maloney.py](../src/frequentist/maloney.py) | [maloney.py](../src/bayesian/maloney.py) | Separate unweighted sample; primary326 and sensitivity325 |',
- '| Later circumcision scenarios | [allocation fits](../analyses/timing/run_allocation.py) | [mixture scenarios](../analyses/timing/run_timing.py) | Conditional assumptions, not observed timing or infant causal effects |','',
- 'Run all standard questions with `python scripts/reproduce.py`; add `--validation` for the full-likelihood comparisons and targeted simulations. Timing scenarios are separate opt-in commands documented [here](../analyses/timing/README.md). Full extension tables remain generated locally. No incompatible estimands are presented as interchangeable method comparisons.']
- extra=['# Extension results by scientific question','Generated from the same execution records as the headline comparison. Bayesian NHANES extensions below retain the original Gaussian approximation; they are not direct-posterior headline fits. These exploratory comparisons are not causal effects.']
- manifest={v['id']:v for v in json.loads((ROOT/'outputs/bayesian/approximation/model_manifest.json').read_text())}
- btab=pd.read_csv(ROOT/'outputs/bayesian/approximation/nhanes_results.csv')
- for family,module in [('behavior','src/frequentist/behavior.py'),('subgroup','src/frequentist/identity.py'),('interaction','src/frequentist/identity.py')]:
-  extra += [f'## {family.title()}', '| Result ID and question | Frequentist OR (95% CI) | Bayesian OR (95% CrI) | P(positive) | Code |','|---|---:|---:|---:|---|']
-  sub=btab[btab.family.eq(family)&btab.prior.eq('primary')&btab.likelihood.eq('normal')]
-  for _,b in sub.iterrows():
-   ref=manifest[b.id]['reference'];q='; '.join(str(ref[k]) for k in ['outcome','population','group','period'] if k in ref)
-   extra.append(f'| `{b.id}` {q} | {ref["odds_ratio"]:.2f} ({ref["ci_low"]:.2f}–{ref["ci_high"]:.2f}) | {b.odds_ratio:.2f} ({b.ci_low:.2f}–{b.ci_high:.2f}) | {100*b.p_positive:.1f}% | [frequentist]({link(module)}) · [Bayesian]({link("src/bayesian/approximation.py","main")}) |')
- extra += ['Interaction rows estimate ratios of odds ratios. The interaction probabilities are sensitive to nuisance priors; see all generated prior-sensitivity rows before interpreting them. Row IDs identify the exact manifest entry in `outputs/bayesian/approximation/model_manifest.json`.', '## Explanatory contrasts', 'These mix prevalence differences and ratios; the scalar Bayesian implementation and each contrast orientation are in [approximation.py](../src/bayesian/approximation.py) and [explanations.py](../src/frequentist/explanations.py). Results are generated in `outputs/bayesian/approximation/explanatory_results.csv` and `outputs/frequentist/explanations/focal_tests.csv`. Failed contrasts remain explicitly unavailable.']
- bp=ROOT/'outputs/bayesian/maloney/maloney_results.csv';fp=ROOT/'outputs/frequentist/maloney/associations.csv'
- if bp.exists() and fp.exists():
-  bm=pd.read_csv(bp);fm=pd.read_csv(fp);mapping={'masculinity_regret':'masculinity–regret','masculinity_visibility':'masculinity–visibility','both_neither_regret':'both versus neither–regret'}
-  extra += ['## Maloney: separate sample', 'The first three frequentist rows use conditional exact ORs and intervals; the remaining rows use logistic Wald intervals. Bayesian estimates use the direct Bernoulli likelihood and proper priors. This comparison does not imply that conditional exact inference and Bayesian logistic inference are identical procedures.', '| Sample; question; coefficient | N | Frequentist OR (95% CI) | Bayesian OR (95% CrI) | P(OR > 1) | Code |','|---|---:|---:|---:|---:|---|']
-  for _,b in bm[bm.prior.eq('primary')].iterrows():
-   fs='primary' if b['sample']=='primary' else 'manuscript_sensitivity';name=mapping.get(b.model,('additive model: ' if b.model=='additive_regret' else 'interaction model: ')+b.term)
-   f=fm[fm['sample'].eq(fs)&fm.comparison.eq(name)].iloc[0];assert int(f.n)==int(b.n)
-   extra.append(f'| {b["sample"]}; {b.model}; {b.term} | {int(b.n)} | {f.odds_ratio:.2f} ({f.ci_low:.2f}–{f.ci_high:.2f}) | {b.odds_ratio:.2f} ({b.ci_low:.2f}–{b.ci_high:.2f}) | {100*b.p_positive:.1f}% | [frequentist]({link("src/frequentist/maloney.py","main")}) · [Bayesian]({link("src/bayesian/maloney.py","main")}) |')
- details += ['## Detailed extension comparisons','See [the generated extension results](extension_results.md) for behavior, identity subgroup/interaction and Maloney comparisons.']
- template=(ROOT/'docs/readme_template.md').read_text();readme=template.replace('<!-- RESULTS -->',table)
+from src.specification import ROOT,ANALYSES
+from src.frequentist.export import load_primary
 
- for path,content in [(ROOT/'README.md',readme),(ROOT/'docs/results.md','\n\n'.join(details)+'\n'),(ROOT/'docs/extension_results.md',re.sub(r'(\|[^\n]*\|)\n\n(?=\|)',r'\1\n','\n\n'.join(extra))+'\n')]:
-  if a.check:assert path.read_text()==content,f'Stale documentation: {path}'
-  else:path.write_text(content)
- print('Result documentation checked.' if a.check else 'Result documentation generated.')
+def table(frame):
+    def fmt(x):
+        if pd.isna(x):return 'unavailable'
+        if isinstance(x,float):return f'{x:.6g}'
+        return str(x).replace('|',' / ').replace('\n',' ')
+    return '\n'.join(['| '+' | '.join(frame.columns)+' |','|'+'|'.join(['---']*len(frame.columns))+'|']+['| '+' | '.join(map(fmt,row))+' |' for row in frame.itertuples(index=False,name=None)])
+
+def main():
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--check',action='store_true');a=p.parse_args()
+    for path in ['outputs/validation/release.json','outputs/selected_figures/validation.json']:
+        assert json.loads((ROOT/path).read_text())['passed'],path
+    _,m=load_primary();s=m['standardization'];p0=s['intact_probability'];p1=s['circumcised_probability'];gap=p1-p0
+    rows=[];details=['# Results and code','Generated from validated frequentist records. All p-values are nominal and two-sided unless a named Holm family is displayed.']
+    for aid,spec in ANALYSES.items():
+        f=json.loads((ROOT/f'outputs/frequentist/headline/{aid}.json').read_text())
+        rows.append([spec['question'],f['n'],f['events'],f'{f["odds_ratio"]:.2f} ({f["ci_low"]:.2f}–{f["ci_high"]:.2f})',f'{f["p_value"]:.4f}'])
+        details += [f'## {spec["question"]}',f'Analysis `{aid}`; N = {f["n"]:,}, events = {f["events"]:,}.',f'```sh\npython -m analyses.nhanes.run --analysis {aid}\n```',f'Formula: `{spec["formula"]}`.',f'[Specification](../config/analyses.json) · [Runner](../analyses/nhanes/run.py) · [Survey estimator](../src/survey/design.py). Result: `outputs/frequentist/headline/{aid}.json`; complete fitted coefficients, covariance and standardization inputs: corresponding `.npz`.']
+    headline=table(pd.DataFrame(rows,columns=['Question','N','Events','Adjusted OR (95% CI)','p']))
+    inputs=f'The pooled 1999–2016 primary frequentist model gives OR {m["odds_ratio"]:.6f} (95% CI {m["ci_low"]:.6f}–{m["ci_high"]:.6f}), p = {m["p_value"]:.6f}. Standardizing to the survey-weighted circumcised complete-case covariate distribution (n = {s["n"]:,}) gives intact-reference probability {100*p0:.6f}%, circumcised probability {100*p1:.6f}%, and gap {100*gap:.6f} percentage points. Both figures use these same fitted coefficients and targets. They show point scenarios, without scenario confidence intervals.'
+    details += ['## Figure inputs',inputs,'[Coefficient export and hash verification](../src/frequentist/export.py) · [Figure checks](../validation/figures.py).','## Raw survey-weighted prevalence','These available-case descriptive prevalences use their own observed circumcision groups. They are not the counterfactual model-standardized figure probabilities.',table(pd.read_csv(ROOT/'outputs/pooled/prevalence.csv')),'See [extension results](extension_results.md) for the retained sensitivity families.']
+    extra=['# Retained 2005–2016 sensitivity and extension results','Generated from local frequentist output tables. Unavailable estimates and failed fits remain visible. Interaction ORs are ratios of subgroup ORs. Explanatory contrasts retain their named scale, including differences; they must not all be read as odds ratios. Holm corrections cover only their original named families, not the entire exploratory search.']
+    families=[('Main model sequence','models.csv','nhanes.py'),('Sensitivity models','sensitivities.csv','nhanes.py'),('Specific sexual practices','behavior_extension/main_results.csv','behavior.py'),('Identity subgroups','identity_subgroups/models.csv','identity.py'),('Identity interactions','identity_subgroups/interactions.csv','identity.py'),('Identity focal family','identity_subgroups/focal_tests.csv','identity.py'),('Explanatory contrasts','explanations/focal_tests.csv','explanations.py')]
+    keep=['outcome','model','sample','population','group','period','era','test','comparison','status','scale','n','events','odds_ratio','estimate','ci_low','ci_high','p_value','p_holm','p_holm_three','p_holm_four','failed_test_placeholder_for_holm']
+    for title,path,code in families:
+        d=pd.read_csv(ROOT/'outputs/frequentist'/path)
+        cols=[c for c in d.columns if c in keep or c.startswith('p_holm')]
+        extra += [f'## {title}',f'[Implementation](../src/frequentist/{code}); exact local record: `outputs/frequentist/{path}`.',table(d[cols])]
+    extra += ['## Optional Maloney supplement','The separate unweighted Maloney analysis is retained as a separate research artifact outside the NHANES manuscript. Run `python scripts/reproduce.py --with-maloney`. Its primary eligible sample and manuscript-exclusion sensitivity are both validated against frozen pre-refactor records. Results are written to `outputs/frequentist/maloney/`; [implementation](../src/frequentist/maloney.py), [methods](methods.md#separate-maloney-supplement). It is not pooled with NHANES.']
+    e=pd.read_csv(ROOT/'outputs/timing/endpoint_results.csv');minimum=json.loads((ROOT/'outputs/timing/endpoint_validation.json').read_text())['minimum_fraction']
+    endpoint=e[['scenario','fraction','component_baseline','component_prevalence','prevalence_ratio','component_OR']].copy()
+    for c in ['fraction','component_baseline','component_prevalence']:endpoint[c]*=100
+    endpoint.columns=['Scenario','Assumed share (%)','Component baseline (%)','Required prevalence (%)','Prevalence ratio','Common conditional OR']
+    timing=['# Timing endpoint results',inputs,f'The minimum adult share under the adult-only scenario is {100*minimum:.6f}%, attained only at 100% behavioral probability in that component. Smaller adult shares cannot account for the entire modeled gap under these assumptions.',table(endpoint),'Infant-only rows are explicitly hypothetical infant shares; the displayed timing figure instead separates before age 18 from age 18 onward. When the association is assigned entirely to one component, the other component is held at the intact-reference probability conditional on covariates. Component-weighted baseline probabilities differ because the constructed timing fractions vary with covariates. No timing distribution is observed.', '[Endpoint solver](endpoints.py) · [Methods](methods.md) · [Source audit](sources.md).','## Historical count extrapolations','These procedure stocks are assumption-driven scenarios, not estimates with sampling uncertainty. The 1.5% marker is a historical extrapolation, not a measured lifetime share or a hard upper limit. Complete grids are in `outputs/timing/count_envelopes.csv`.',table(pd.read_csv(ROOT/'outputs/timing/count_envelopes.csv').query('threshold == 18 and missing_multiplier == 1 and historical_multiplier == 1'))]
+    details += ['## Pooled model sensitivities',table(pd.read_csv(ROOT/'outputs/pooled/models.csv')[['model','n','events','odds_ratio','ci_low','ci_high','p_value']]), '## Pooled adjustment sequence',table(pd.read_csv(ROOT/'outputs/pooled/adjustment_sequence.csv')[['model','sample','n','odds_ratio','ci_low','ci_high','p_value']]), '[Questionnaire skip audit](pooled_analysis.md)']
+    details += ['## Exploratory temporal interaction tests',table(pd.read_csv(ROOT/'outputs/time_trend/tests.csv')), '[Plan](../analyses/nhanes/time_trend_plan.md) · [Code](../analyses/nhanes/time_trend.py). Direct-question 2009–2016 is the main comparability test. Longer windows mix question regimes. No clear trend was established; these are nominal exploratory tests, not evidence of temporal equivalence.']
+    notes=['# Manuscript integration notes','The manuscript was not edited. Use the following frequentist descriptions and values when revising it.',inputs,'## Methods wording','Survey-weighted logistic models used the existing NHANES examination weights, strata, PSUs and domain variance estimation, with two-sided t inference using residual design degrees of freedom. Figure inputs were calculated from the complete fitted coefficient vector of the primary model, standardized over the survey-weighted covariate distribution of circumcised complete cases. Sensitivity figures depict compatible point scenarios, not fitted timing-specific effects or uncertainty distributions.','## Timing caption','Compatible associations by assumed circumcision timing. Panel A shows component-weighted adjusted probabilities of lifetime male–male sexual behavior; panel B shows common conditional odds ratios relative to intact men. Curves fix the assumed adult share of circumcised men while allowing timing fractions to vary with covariates. Colors partition the modeled excess between timing components. Before age 18 includes infancy, childhood and adolescence. The starred 1.5% assumption extrapolates historical U.S. procedure counts (Owings and Kozak, 1998, Table 11); it is not an observed lifetime share or upper bound. Both component odds ratios are constrained to be at least one in the displayed region.',f'Adult-only feasibility threshold: {100*minimum:.6f}% of circumcised men, at a component outcome probability of 100%. See the endpoint table below for explicit infant-only scenarios; do not label the before-18 figure component as infant circumcision.',table(endpoint),'## Confounding caption','Hypothetical binary confounding sufficient to reconstruct the standardized association. Axes show characteristic prevalence in intact and circumcised men; colored bands show the required outcome-probability difference between those with and without the characteristic. Gray regions are infeasible under common component outcome probabilities and no residual circumcision association. This is a specified binary-mixture illustration, not a bound on every possible confounding structure.',f'The lowest band begins at the standardized gap, {100*gap:.2f} percentage points.','## Descriptive prevalence','Raw survey-weighted prevalences are reproduced in [results](results.md#raw-survey-weighted-prevalence). They refer to observed groups and differ from the common-target standardized probabilities above.']
+    files={'README.md':(ROOT/'docs/readme_template.md').read_text().replace('<!-- RESULTS -->',headline),'docs/results.md':'\n\n'.join(details),'docs/extension_results.md':'\n\n'.join(extra),'figures/README.md':(ROOT/'docs/figures_template.md').read_text().replace('<!-- FIGURE_INPUTS -->',inputs),'analyses/timing/results.md':'\n\n'.join(timing),'analyses/timing/reporting.md':'# Reporting timing scenarios\n\nSee the generated [endpoint results](results.md) and [manuscript integration notes](../../docs/manuscript_integration.md). These are frequentist point scenarios; no scenario confidence intervals are calculated.','docs/manuscript_integration.md':'\n\n'.join(notes)}
+    for name,content in files.items():
+        content=content.rstrip()+'\n';path=ROOT/name
+        if a.check:assert path.read_text()==content,f'Stale documentation: {name}'
+        else:path.write_text(content)
+    print('Documentation checked.' if a.check else 'Documentation generated.')
 if __name__=='__main__':main()

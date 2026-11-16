@@ -1,4 +1,3 @@
-from src.frequentist.maloney import main as frequentist
-from src.bayesian.maloney import main as bayesian
-if __name__=="__main__":
- frequentist();bayesian()
+"""Optional separate Maloney supplement; no pooling with NHANES."""
+from src.frequentist.maloney import main
+if __name__ == "__main__": main()

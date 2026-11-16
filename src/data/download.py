@@ -41,8 +41,10 @@ def fetch(record, offline=False):
                 checked_utc=datetime.now(timezone.utc).isoformat())
 
 
-def main(offline=False):
+def main(offline=False, with_maloney=False):
     specs = json.loads((ROOT / 'config/sources.json').read_text())
+    if not with_maloney:
+        specs = [s for s in specs if s['path'].startswith('data/raw/')]
     with ThreadPoolExecutor(max_workers=4) as pool:
         records = list(pool.map(lambda spec: fetch(spec, offline), specs))
     nhanes = [record for spec, record in zip(specs, records) if spec['path'].startswith('data/raw/')]
@@ -55,4 +57,6 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--offline', action='store_true')
-    main(parser.parse_args().offline)
+    parser.add_argument('--with-maloney', action='store_true')
+    args=parser.parse_args()
+    main(args.offline,args.with_maloney)

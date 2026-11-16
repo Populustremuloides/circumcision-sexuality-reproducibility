@@ -29,7 +29,7 @@ patterns=[(.1,(0,(12,4)),'90% before 18'),(.25,(0,(8,4)),'75% before 18'),(.5,(0
 # 10–25, 25–50, 50–75, 75–90, and 90–100%, from top to bottom.
 # Restrict shading to adult OR >= the fitted OR and early OR <= it,
 # where these ordered bands describe admissible positive mixtures.
-common=json.loads((OUT/'validation.json').read_text())['adjusted_OR_at_coefficient_mean']
+common=json.loads((OUT/'validation.json').read_text())['adjusted_OR']
 gx=np.geomspace(common,250,1600)
 bounds=[np.full_like(gx,common)]
 for target,_,_ in patterns:
@@ -48,18 +48,18 @@ left_bounds=[np.full_like(lx,common)]
 for target,_,_ in patterns:
  q=black.loc[np.isclose(black.adult_excess_fraction,target)].sort_values('adult_OR')
  q=q.loc[q.adult_OR<common]
- vals=np.interp(np.log(lx),np.r_[np.log(q.adult_OR),np.log(common)],np.r_[q.early_OR,common],left=1.6)
- left_bounds.append(np.clip(vals,common,1.6))
-left_bounds.append(np.full_like(lx,1.6))
+ vals=np.interp(np.log(lx),np.r_[np.log(q.adult_OR),np.log(common)],np.r_[q.early_OR,common],left=1.62)
+ left_bounds.append(np.clip(vals,common,1.62))
+left_bounds.append(np.full_like(lx,1.62))
 for lower,upper,color in zip(left_bounds[:-1],left_bounds[1:],pride):
  assert np.all(upper>=lower-1e-8)
  a.fill_between(lx,lower,upper,color=color,alpha=.14,linewidth=0,zorder=0)
 for boundary in left_bounds[1:-1]:
- a.plot(lx,np.where(boundary<1.6-1e-8,boundary,np.nan),color='#777777',lw=.65,zorder=1)
+ a.plot(lx,np.where(boundary<1.62-1e-8,boundary,np.nan),color='#777777',lw=.65,zorder=1)
 # Boundary curves are thin gray lines, directly labeled with excess allocation.
 for boundary,(_,_,label) in zip(bounds[1:-1],patterns):
  a.plot(gx,boundary,color='#777777',lw=.65,zorder=1)
- a.text(235,boundary[-1]+.007,label,fontsize=8,color='#555555',ha='right',va='bottom')
+ a.text(235,boundary[-1]-.007 if label in ['50% each','75% adult'] else boundary[-1]+.007,label,fontsize=8,color='#555555',ha='right',va='top' if label in ['50% each','75% adult'] else 'bottom')
 # Probability bands use component-weighted probabilities from the same model.
 pc=json.loads((OUT/'probability_validation.json').read_text())['standardized_total_probability']*100
 px=np.linspace(pc,100,1600)
@@ -76,7 +76,7 @@ for upper,lower,color in zip(pbounds[:-1],pbounds[1:],pride):
  b.fill_between(px,lower,upper,color=color,alpha=.14,linewidth=0,zorder=0)
 for boundary,(_,_,label) in zip(pbounds[1:-1],patterns):
  b.plot(px,boundary,color='#777777',lw=.65,zorder=1)
- b.text(98,boundary[-1]+.025,('90% of modeled excess comes from\ncircumcision before age 18' if label=='90% before 18' else label),fontsize=8,color='#555555',ha='right',va='bottom')
+ b.text(98,boundary[-1]-.035 if label in ['50% each','75% adult'] else boundary[-1]+.025,('90% of modeled excess comes from\ncircumcision before age 18' if label=='90% before 18' else label),fontsize=8,color='#555555',ha='right',va='top' if label in ['50% each','75% adult'] else 'bottom')
 # Complementary probability region, bounded by adult conditional OR=1.
 # Work horizontally at fixed before-18 probability to preserve the curved boundary.
 py=np.linspace(pc,7.0,1000)
@@ -92,7 +92,7 @@ for left,right,color in zip(left_pbounds[:-1],left_pbounds[1:],pride):
  b.fill_betweenx(py,left,right,color=color,alpha=.14,linewidth=0,zorder=0)
 for boundary in left_pbounds[1:-1]:
  b.plot(boundary,py,color='#777777',lw=.65,zorder=1)
-a.set_xscale('log');a.set_xlim(1,250);a.set_ylim(1,1.60);a.set_xticks([1,2,5,10,20,50,100,250]);a.xaxis.set_major_formatter(ScalarFormatter());a.minorticks_off()
+a.set_xscale('log');a.set_xlim(1,250);a.set_ylim(1,max(1.62,common*1.04));a.set_xticks([1,2,5,10,20,50,100,250]);a.xaxis.set_major_formatter(ScalarFormatter());a.minorticks_off()
 a.set_xlabel('Odds ratio among men circumcised as adults\n(logarithmic scale)');a.set_ylabel('Odds ratio among men circumcised before 18')
 a.set_title('B  Adjusted odds ratio of lifetime male–male sexual behavior\nin circumcised men versus intact men',loc='center',fontsize=12,pad=14)
 b.set_xlim(float(np.min(left_pbounds[0])),100);b.set_ylim(float(np.min(pbounds[-1])),7.0);b.set_xticks([5,20,40,60,80,100]);b.set_yticks([5,5.5,6,6.5,7]);b.xaxis.set_major_formatter(PercentFormatter(100,decimals=0));b.yaxis.set_major_formatter(PercentFormatter(100,decimals=1))

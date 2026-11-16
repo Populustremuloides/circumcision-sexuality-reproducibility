@@ -1,24 +1,21 @@
 """Timing-component OR trade-offs with covariate-varying timing composition.
-Derives illustrative curves from the existing calibrated Bayesian fit.
+Derives illustrative curves from the existing survey-weighted logistic fit.
 """
 import os
 os.environ['OPENBLAS_NUM_THREADS']='1'
-os.environ['MPLCONFIGDIR']='/tmp/circ-timing-matplotlib'
 from pathlib import Path
-import sys,json,hashlib
-import numpy as np,pandas as pd,patsy
+import sys,json
+import numpy as np,pandas as pd
 from scipy.special import expit
 from scipy.optimize import brentq
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-from matplotlib.ticker import ScalarFormatter
 ROOT=Path(__file__).resolve().parents[2];REPO=ROOT;OUT=ROOT/'outputs/selected_figures/timing';OUT.mkdir(parents=True,exist_ok=True)
 sys.path.insert(0,str(REPO))
-from src.specification import ADJUST
 from analyses.timing.endpoints import endpoint
-D=pd.read_csv(REPO/'data/analysis.csv.gz');_,xx=patsy.dmatrices('msm_ever ~ '+ADJUST['full'],D.loc[D.eligible],return_type='dataframe');z=D.loc[xx.index];take=z.circ.eq(1);w=z.loc[take,'weight'].to_numpy();w/=w.sum();X=xx.to_numpy()[take];j=list(xx.columns).index('circ');X[:,j]=0
-archive=REPO/'outputs/bayesian/headline/nhanes.msm_ever.adjusted.npz';cache=np.load(archive);assert list(cache['columns'])==list(xx.columns);b=cache['weights']@cache['draws'];eta=X@b;pU=expit(eta);pC=expit(eta+b[j]);delta=pC-pU;observed=np.exp(b[j]);minimum=w@(delta/(1-pU));gap=w@delta
+from src.frequentist.export import load_primary
+cache, fit_metadata = load_primary()
+archive=REPO/'outputs/frequentist/headline/nhanes.msm_ever.adjusted.npz'
+X=cache['X0'];w=cache['target_weights'];b=cache['coefficients'];j=int(cache['circ_index'])
+eta=X@b;pU=expit(eta);pC=expit(eta+b[j]);delta=pC-pU;observed=np.exp(b[j]);minimum=w@(delta/(1-pU));gap=w@delta
 shares=[.01,.015,.025,.05,.10]
 def solve(f,adult):
  pA=np.ones_like(pU) if np.isinf(adult) else expit(eta+np.log(adult))
@@ -66,7 +63,6 @@ for target,dashes,label in [(.10,(0,(12,4)),'90% of excess before age 18'),(.25,
  q=pd.DataFrame(rr);contrib+=rr
 pd.DataFrame(contrib).to_csv(OUT/'probability_contributions.csv',index=False)
 common=float(w@pC)*100
-from matplotlib.ticker import PercentFormatter
 (OUT/'probability_validation.json').write_text(json.dumps({'standardized_total_probability':float(w@pC),'colored_points':len(rows),'contribution_points':len(contrib),'max_total_probability_error':max(abs(r['adult_share']*r['adult_probability']+(1-r['adult_share'])*r['early_probability']-w@pC) for r in rows+contrib)},indent=2))
 print('Generated and validated probability figure.')
 # Exact 100%-adult-excess boundary for shading in the paired figure.

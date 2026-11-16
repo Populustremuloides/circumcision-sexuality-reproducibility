@@ -1,74 +1,62 @@
-# Circumcision and sexual behavior: reproducible analyses
+# Circumcision status and reported male–male sexual behavior
 
-Code for NHANES 2005–2016 and the separate Maloney regret/self-concept supplement. Each headline question has a shared sample and model specification, separate frequentist and Bayesian estimators, and a runnable analysis ID.
+## Research question
 
-These observational, exploratory associations are not causal effects. The Bayesian reanalysis followed examination of the frequentist results. The repository includes two selected sensitivity figures and excludes source data, generated datasets, model-output files and manuscript files; the concise documentation tables below are generated from validated local runs. No cross-study meta-analysis is included.
+Is circumcision status associated with reported lifetime male–male sexual behavior in U.S. men? This repository reproduces an exploratory observational analysis. It does not establish a causal or developmental mechanism.
 
-## Selected figures
+## Dataset and eligible population
 
-[View the two selected figures, download publication files, and read their assumptions](figures/README.md). Rebuild them with `python -m analyses.figures.reproduce` after reproducing NHANES.
+Primary behavior analysis: NHANES 1999–2016, nine two-year cycles; respondents recorded as male, ages 20–59, with positive examination weights. Each model uses its required complete cases. Public source files are downloaded and checksum-verified.
 
-## Headline questions: side-by-side results
+## Outcome, exposure and covariates
+
+The final primary outcome (selected during exploratory development, not prospectively) is reported lifetime male–male sexual behavior, harmonized across questionnaire changes. Exposure is self-reported circumcision, with intact men as reference. Adjustment includes linear and quadratic age, survey cycle, race/ethnicity, education and nativity. Survey-weighted logistic regression uses Taylor-linearized standard errors and finite design degrees of freedom, preserving examination weights, strata, PSUs and domain estimation. [Methods](docs/methods.md) · [Executable specifications](config/analyses.json).
+
+## Primary frequentist estimate
 
 <!-- RESULTS -->
 
-Frequentist intervals use the survey-design t reference. Bayesian results use a direct, proper-prior weighted logistic pseudo-posterior with uncertainty calibrated for strata and PSUs at the posterior mean. They are not the earlier Gaussian-summary approximation, which remains available as a sensitivity analysis. Directional probabilities concern adjusted associations under the stated model and priors, not causation. See [each question and its runnable command](docs/results.md), [extension and Maloney comparisons](docs/extension_results.md), [methods](docs/methods.md), and [validation findings](docs/validation.md).
+Intervals are 95% confidence intervals; primary p-values are nominal and two-sided. Identity is distinct from behavior. [Result-to-code guide](docs/results.md).
 
-## Reproduce
+## Sensitivity analyses
 
-Python 3.10 or 3.11 and Git are required. From the repository root:
+The pooled analysis includes exclusions of 1999–2000, the original 2005–2016 window, direct questions in 2009–2016, and two earlier-screening-zero sensitivity checks. [Pooled methods and skip audit](docs/pooled_analysis.md).
+
+Retained analyses cover alternate populations and periods, income and age specifications, specific sexual practices, identity-defined subgroups and explanatory contrasts. Identity and the retained practice/subgroup extensions remain explicitly limited to their original 2005–2016 or 2009–2016 windows. Their original multiplicity corrections and failed-model records are preserved. [Results and code](docs/extension_results.md).
+
+## Figures and assumptions
+
+[View/download the two selected figures](figures/README.md): timing mixtures and hypothetical binary confounding. Both use the same model-standardized probabilities over circumcised complete cases. These are point scenarios with assumed shares, not observed timing-specific effects or probabilities that a mechanism is true. The [timing source audit](analyses/timing/sources.md) and [methods](analyses/timing/methods.md) distinguish historical counts from assumptions. The before-18 figure component is not infant-specific.
+
+## Reproduction
+
+Python 3.10 or 3.11 is required. From a checkout of this repository:
 
 ```sh
-git clone https://github.com/Populustremuloides/circumcision-sexuality-reproducibility.git
-cd circumcision-sexuality-reproducibility
-python3 -m venv .venv
-source .venv/bin/activate
 python -m pip install -r requirements.txt
 python scripts/reproduce.py
+python -m analyses.figures.reproduce
+python -m scripts.build_results --check
 ```
 
-On Windows, activate with `.venv\Scripts\activate`. Initial downloads require internet access. The runner verifies 25 pinned public source files, harmonizes records, runs frequentist analyses and their numerical checks, fits the Bayesian headline models and approximation sensitivities, runs both Maloney implementations, verifies the paired results, and generates this comparison. Allow several minutes; extensive validation takes longer. Data, outputs and draws remain local in ignored directories. A failure stops the pipeline and is recorded in `outputs/run.json` with logs under `outputs/logs/`.
+The first reproduction command downloads and verifies the current and earlier NHANES source files, runs the retained models and validation, exports fitted coefficients, generates timing scenarios and both figures, and rebuilds numerical documentation. The separate figure command is also available for rerendering without refitting. Generated figures are under `outputs/selected_figures/`; committed publication copies are under `figures/`. Data and full model artifacts remain local and ignored by Git. Initial downloading requires internet access.
+
+Use `python scripts/reproduce.py --offline` for verified cached inputs. The [optional Maloney supplement](docs/methods.md#separate-maloney-supplement) is preserved as a separate research artifact outside the NHANES manuscript; add `--with-maloney` to download its additional source, run it and validate it. It is not pooled with NHANES. Add `--r-check` for independent R `survey` comparisons; R is not required for routine reproduction.
+
+To rerun a single registered model after harmonization:
 
 ```sh
-python scripts/reproduce.py --offline                 # verified cached sources
-python scripts/reproduce.py --nhanes-only             # omit Maloney
-python scripts/reproduce.py --frequentist-only        # original analyses only
-python scripts/reproduce.py --validation              # alternative implementations + 4,000 targeted simulations
-python -m analyses.nhanes.run --analysis nhanes.identity_gay.adjusted
-python -m scripts.build_results --check               # detect stale comparison text
+python -m analyses.nhanes.run --analysis nhanes.msm_ever.adjusted
 ```
 
-The single-question command requires the harmonized data from the full runner. Add `--method frequentist` or `--method bayesian` to run one estimator. Bayesian numerical integration uses four independent importance-sampling batches; no MCMC installation is required.
+## Historical period comparisons and publication tables
 
-## Repository map
+`python -m analyses.nhanes.descriptive` generates the demographic Table 1 and sequential exclusions from the exported primary sample. These are also generated by the default workflow.
 
-| Location | Purpose |
-|---|---|
-| [config/analyses.json](config/analyses.json) | Executable headline IDs, outcomes, formulas and shared adjustment sets |
-| [src/data](src/data) | Source download, audits and NHANES harmonization |
-| [src/survey](src/survey) | Shared design-based covariance and survey estimation |
-| [src/frequentist](src/frequentist) | Frequentist NHANES, extensions and Maloney |
-| [src/bayesian](src/bayesian) | Direct headline model, Gaussian/t sensitivities and direct Maloney integration |
-| [analyses](analyses) | Question-level entry points and optional timing scenarios |
-| [validation](validation) | Independent R checks, numerical comparisons and simulations |
-| [docs/results.md](docs/results.md) | Result-to-code links and individual commands |
+Add `--with-replication` to run the separately specified NHANES 1999–2004 temporal test; its [fixed specification](analyses/replication/specification.md) was committed before estimating associations. This is retained historical analysis, now overlapping the pooled primary sample; it is no longer independent confirmation. [Replication results](docs/replication_results.md). Add `--r-check` to verify both periods in R.
 
-Outputs are separated into `outputs/frequentist/`, `outputs/bayesian/`, `outputs/validation/`, and optional `outputs/timing/`. Earlier script names remain as compatibility entry points; numerical implementations live in the directories above.
+## Validation and limitations
 
-## Independent R verification
+[Validation](docs/validation.md) covers coding, source hashes, samples, weights, domain variance, numerical stability, Taylor/jackknife consistency, frozen regression references, fitted-model exports and mixture reconstruction. [GitHub Actions](.github/workflows/reproduce.yml) runs the core workflow and optional R checks. Numerical agreement is not independent replication.
 
-```sh
-conda env create -f environment.yml
-conda activate circumcision-reproduction
-python scripts/reproduce.py --r-check
-```
-
-Alternatively install R and `survey` and put `Rscript` on PATH. The reference comparison checks eight core models on shared harmonized records; it is not an independent data extraction or validation of every extension. The reference versions are R 4.5.3 and survey 4.5. The manually triggered GitHub Actions workflow runs the standard pipeline without uploading data or generated outputs.
-
-## Scope and transparency
-
-The Maloney primary sample includes all 326 eligible men with the three required responses. The former 325-person exclusion is retained as an explicitly labeled sensitivity check. This sample is not pooled with NHANES.
-
-Timing sensitivity scenarios retain the earlier Gaussian approximation and are not silently relabeled as direct-posterior results. They cannot identify the probability that infant circumcision caused the association. [Timing evidence and endpoint package](analyses/timing/README.md) contains the 14-source register, numerical extraction, derivations, generated endpoint tables and a reporting guide.
-
-The release preserves the clean public-code history without importing exploratory development commits. Its [analytical history](docs/analytical_history.md) documents methodological development and limitations. Sparse gay-identity fits and imperfect simulation coverage are retained in the [validation report](docs/validation.md).
+The broader analytical search was not preregistered; the primary p-value is nominal. [Analytical history](docs/analytical_history.md) records methodological development. Unmeasured childhood context, timing, geography, reporting and selection remain unresolved. Model-standardized associations do not identify causal effects. The manuscript itself is not included or modified by this pipeline.

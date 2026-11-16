@@ -8,13 +8,11 @@ The fractions in the endpoint tables are assumptions. The source audit did not e
 
 ## Population, outcome and baseline
 
-The principal outcome is reported lifetime male–male sexual behavior among the original eligible NHANES 2005–2016 male participants aged 20–59. The primary all-men model has 9,161 complete cases and 498 events. The common adjustment set includes linear and quadratic age, survey cycle, race/ethnicity, education and nativity. Survey weights, strata and PSUs remain those of the main analysis.
+The principal outcome is reported lifetime male–male sexual behavior among the eligible NHANES 1999–2016 male participants aged 20–59. The primary all-men model has 12,973 complete cases and 662 events. The common adjustment set includes linear and quadratic age, survey cycle, race/ethnicity, education and nativity. Survey weights, strata and PSUs remain those of the main analysis.
 
 For timing calculations, standardization uses the empirical covariate distribution of currently circumcised complete cases. All infant and adult shares therefore have **circumcised men** as their denominator. This differs from the full-sample target distribution used in some earlier prevalence summaries. Weighted complete-case totals describe the represented domain, not a new nonresponse-adjusted population estimate.
 
-Let X denote the measured covariates, p_U(X) the modeled prevalence if current status is uncircumcised and p_C(X) the modeled prevalence if current status is circumcised. These are adjusted associational predictions. Their contrast is not automatically a causal intervention effect. The endpoint presentation uses the posterior coefficient mean to obtain these probabilities. A probability evaluated at the coefficient mean need not equal the median of probabilities evaluated across posterior draws.
-
-The generated endpoint tables now include the direct calibrated Bayesian implementation used in the repository's headline results. They also reproduce the original Gaussian-summary calculation and its U.S.-born restriction. The older full timing grids and allocation analyses retain their original Gaussian-summary specification. Model labels identify these versions throughout.
+Let X denote the measured covariates, p_U(X) the modeled prevalence if current status is uncircumcised and p_C(X) the modeled prevalence if current status is circumcised. These are adjusted associational predictions. Their contrast is not automatically a causal intervention effect. Probabilities are evaluated at the exported frequentist fitted coefficients. No separate regression is fitted for the timing analysis, and no simulated coefficient draws enter these point scenarios.
 
 ## Three timing components
 
@@ -70,8 +68,6 @@ For each assumed total share f, numerical root finding chooses R such that the w
 
 Within the constructed component, weights are proportional to the original circumcised weights multiplied by f_G(X;R). Both the required behavioral prevalence and its comparison baseline are averaged with those same component weights. Their ratio is a prevalence ratio. It is distinct from the common conditional odds ratio R. This matching avoids comparing a selected component's prevalence with an unrelated unadjusted baseline.
 
-The full timing grid also contains a different construction that holds the component fraction constant across covariates and calculates varying component probabilities. Those results are retained separately in `constant_fraction.csv`. Their marginal ORs and intervals should not be combined with the common-OR construction as if they were the same estimand.
-
 ## External procedure-count benchmark
 
 Source S07 reports approximately 15,000 procedures at ages 15–44 and 13,000 at ages 45–64 in 1996, combining inpatient and ambulatory settings. The [extraction record](source_values.json) preserves the published age bands, units, source location and rounding. It does not relabel the 15–44 category as an observed adult-only count.
@@ -86,8 +82,6 @@ Source S01 supplies birth-hospitalization rates for 1979 onward, covering only s
 
 ## Uncertainty and reproducibility
 
-For the direct calibrated Bayesian model, the endpoint program propagates all 131,072 existing importance proposals with their posterior weights through the minimum-budget formula. It retains draws that have no positive excess as a zero minimum positive budget, rather than discarding them. It reports the resulting weighted interval separately from the illustrative component-OR point calculations. External count uncertainty and timing shares are not integrated using an invented probability distribution.
+All scenario curves and endpoint tables are point calculations. No confidence interval for a component OR or timing share is claimed. The original survey-model confidence interval quantifies uncertainty in the observed current-status association; it does not establish timing or causation.
 
-The original Gaussian-summary analysis propagates 4,000 coefficient draws and records infeasible scenarios without silently renormalizing their posterior mass. Detailed constant-fraction and mixed scenarios are available separately. The complementing synthetic allocation analysis retains original respondents/PSUs and recalibrates assignments inside selected jackknife replicates. It is not a certified global worst-case optimization under all historical cohort budgets.
-
-The [endpoint generator](endpoints.py) checks the mixture identities, weighted fraction targets and agreement with the previous Gaussian endpoint results. It records hashes of the fitted draws, data, source register, numerical extraction and generator. The [one-command runner](reproduce.py) checks source-derived inputs and produces a validation record. Model failures remain visible. Neither endpoint estimates the probability that infant circumcision caused the association.
+The [endpoint generator](endpoints.py) reads the verified primary fit exported by [the shared frequentist interface](../../src/frequentist/export.py), checks mixture identities and fraction budgets, and writes local results and validation records. The [count generator](counts.py) preserves source-linked historical arithmetic and coverage calculations. `python -m analyses.timing.reproduce` runs both. The broader historical exploratory simulations are archived in the pre-refactor backup tag, rather than included in current inference.

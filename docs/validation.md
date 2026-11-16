@@ -1,19 +1,17 @@
-# Validation and practical limits
+# Numerical validation
 
-The headline behavior conclusion was stable across the original Gaussian approximation, the full logistic pseudo-posterior with survey calibration, and a curvature-adjusted logistic likelihood. Identity intervals continued to include 1; gay-only directional probabilities varied by implementation. Full results are generated in `outputs/validation/bayesian/`.
+The default reproduction checks source checksums, independent XPT readers, questionnaire coding and routing, complete-case counts, model formulas, survey weights, strata/PSU nesting and domain variance. The survey fitter checks convergence, rank, conditioning, scores and agreement between two sandwich calculations. A hand-calculated example retains an empty-domain PSU. Common rescaling of weights must preserve coefficients and survey standard errors.
 
-The documented comparison used 131,072 independent importance proposals per target. Numerical checks cover gradients, curvature transformations, effective sample size, maximum importance weight, independent-batch stability, and a known Normal target. These are not MCMC chains; chain R-hat does not apply.
+Selected behavior and identity models retain stratified delete-one-PSU jackknife comparisons. Explanatory contrasts preserve paired restandardization and their original Holm families, including explicit placeholders for failed tests. A failed fit is not a null result. The focal gay-only fit is retained, but no successful delete-PSU validation is claimed for every sparse identity specification.
 
-Across 4,000 targeted simulations using the actual outcome-specific covariates and survey structure, the proper-prior fit with posterior-based calibration completed all 4,000. MLE-dependent approaches failed in 576, including 566 gay-only cases with sparse education categories. One actual-data gay-only delete-PSU replicate also failed; its variance was not calculated by silently dropping that replicate. For behavior, gay/bisexual and bisexual outcomes, delete-PSU standard errors differed from Taylor estimates by less than 0.4%.
+`validation/frequentist/reference_results.json` freezes aggregate validation targets from the pre-refactor validated results. `validation.release` compares all retained tables, including sensitivities and multiplicity-adjusted results, with relative tolerance 1e-7 and absolute tolerance 1e-9. It also compares exported full-model focal estimates with the existing analysis outputs. These reference values are not used to fit models.
 
-Behavioral 95% interval coverage in non-null simulations was approximately90–92% for both approaches. Fixed-truth coverage of a proper-prior credible interval need not equal95%, and simulation Monte Carlo error is material, but these checks do not establish universally calibrated intervals or probabilities. Simulation alternatives use a Laplace approximation; actual-data headline estimates use full importance integration. The simulations condition on the observed design/covariates, rather than reproducing every aspect of population sampling.
+The optional R check independently fits eight core models with `survey::svyglm`, checking coefficients, standard errors, ORs, interval endpoints and p-values to absolute tolerance 1e-6. It reuses harmonized inputs; it does not independently validate their coding or every extension. Install R and its `survey` package, then run `python scripts/reproduce.py --r-check` or `Rscript validation/r_survey/reproduce.R` after the Python workflow.
 
-## Re-run checks
+The figure runner verifies artifact/input/code hashes, standardization targets and mixture reconstruction. Feasible conditional timing mixtures reconstruct the predicted probability within 1e-10; probability-space and confounding mixtures are checked to 1e-9 or tighter. The confounding plot checks every feasible color-grid sample. Scenario curves have no uncertainty bands.
 
-```sh
-python scripts/reproduce.py --validation
-python -m validation.simulations.informative_sampling
-python -m scripts.build_results --check
-```
+Run `python scripts/reproduce.py`, `python -m analyses.figures.reproduce`, and `python -m scripts.build_results --check`. Local validation records are under `outputs/frequentist/`, `outputs/validation/`, `outputs/timing/` and `outputs/selected_figures/`. Add `--with-maloney` to include and verify the separate supplement.
 
-The second command runs the earlier complementary 8,000-repetition informative-sampling experiment. R survey verification is available via `--r-check`. The matched-headline release checks verify sample sizes, events, formulas, input hashes, numerical integration, and agreement with frozen validated estimates. Neither a code check nor agreement between estimators is independent replication or evidence excluding confounding. No independent human statistical review is claimed.
+These checks support computational correctness under the implemented model. They do not rule out confounding, reporting bias, selection, or a failure of the population association to replicate. No independent human statistical review is claimed.
+
+The pooled primary fit and five period/screening sensitivity fits are independently checked by `Rscript analyses/nhanes/verify_pooled.R`. Historical six-cycle frozen-reference checks remain unchanged; the pooled primary export is compared against its newly generated pooled model record. Table 1 and figure inputs use the pooled artifact.
